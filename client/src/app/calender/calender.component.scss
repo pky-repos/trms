@@ -1,0 +1,21 @@
+div {
+    font-size: 20px;
+    border: 1px solid rgb(252, 247, 247);
+    border-collapse: collapse;
+    table tr td {
+        border: 1px solid rgb(204, 199, 199);
+        border-collapse: collapse;
+        table th, td{
+            border: 1px solid rgb(235, 227, 227);
+            border-collapse: collapse;
+            
+        }
+            
+        th, td {
+           width: 50px;
+           height: 40px;
+        }
+        
+    }
+   
+}

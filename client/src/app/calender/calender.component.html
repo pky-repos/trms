@@ -1,0 +1,44 @@
+<div style="text-align: center;">
+  <table class="table table-hover" style="padding:10px;">
+    <tr>
+      <td>
+        <table class="table table-hover">
+          <tr>
+            <td></td>
+          </tr>
+          <ng-container *ngFor="let table of tables">
+            <tr>
+              <th>{{table.id}}</th>
+            </tr>
+          </ng-container>
+        </table>
+      </td>
+      <td>
+          <table class="table table-hover">
+              <thead>
+                  <tr>
+                    <ng-container *ngFor="let hour of openHours"> 
+                      <th>
+                        {{hour}}
+                      </th>
+                    </ng-container>
+                  </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let tablesReservation of tablesReservations">
+                      <tr>
+                        <ng-container *ngFor="let reservation of tablesReservation.slot">
+                          <td>
+                            <ng-container *ngIf="reservation != 0">
+                              {{reservation}}
+                            </ng-container>
+                          </td>
+                        </ng-container>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+          </table>
+      </td>
+    </tr>
+  </table>
+</div>

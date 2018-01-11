@@ -1,0 +1,32 @@
+{
+  "name": "trms",
+  "version": "1.0.0",
+  "description": "Table Reservation Management System",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pky-repos/trms.git"
+  },
+  "keywords": [
+    "reservation"
+  ],
+  "author": "Pankaj Kumar Yadav",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pky-repos/trms/issues"
+  },
+  "homepage": "https://github.com/pky-repos/trms#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "ejs": "^2.5.7",
+    "express": "^4.16.2",
+    "mongoose": "^4.13.9"
+  },
+  "devDependencies": {
+    "cors": "^2.8.4",
+    "mongoose-sequence": "^4.0.1"
+  }
+}

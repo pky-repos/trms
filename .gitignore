@@ -1,0 +1,8 @@
+# Dependency directories
+node_modules/
+
+client/node_modules/
+client/e2e/*.js
+client/e2e/*.map
+client/.gitignore_
+client/.git_/
