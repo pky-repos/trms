@@ -1,21 +1,25 @@
 <div>
-  <div>
-      {{currentDate | date}}
+    <nav class="navbar navbar-inverse navbar-static-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">TRMS</a>
+            </div>
+            <div class="nav navbar-nav">
+                <ul class="nav navbar-nav navbar-left">
+                        <li><a href="#"> {{currentDate | date}}</a></li>
+                        <li><a href="#"> {{currentDate | date: 'E'}}</a></li>
+                </ul>
+                                        
+                <button class="btn btn-primary navbar-btn">Prev</button>
+                <button class="btn btn-default">Today</button>
+                <button class="btn btn-primary">Next</button>
+                <button (click)="createReservation()" class="btn btn-info">Create Reservation </button>
+                <button (click)="addTable()" class="btn btn-basic">Add Table </button>
+            </div>
+         
+    </div>
+</nav>
 
-  </div>
-  <div>
-      {{currentDate | date: 'E'}}
-
-  </div>
-  <div>
-      <button class="btn btn-primary">Prev</button>
-      <button class="btn btn-default">Today</button>
-      <button class="btn btn-primary">Next</button>
-  </div>
-  <div>
-    <button (click)="createReservation()" class="btn btn-info">Create Reservation </button>
-    <button (click)="addTable()" class="btn btn-basic">Add Table </button>
-  </div>
   <div *ngIf="showAddTableForm">
       <div style="width: 15%; border:1px solid rgb(216, 214, 214); padding: 5px; border-radius: 5px;">
             <form (ngSubmit)="onSubmit()" #heroForm="ngForm">
