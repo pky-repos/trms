@@ -13,14 +13,142 @@
                 <button class="btn btn-primary navbar-btn">Prev</button>
                 <button class="btn btn-default">Today</button>
                 <button class="btn btn-primary">Next</button>
-                <button (click)="createReservation()" class="btn btn-info">Create Reservation </button>
+                
+                <span class="dropdown">
+                    <button (click)="createReservation()" class="btn btn-info dropdown-toggle" type="button"
+                    id="createReservationButton" data-toggle="dropdown" aria-haspopup="true" 
+                    aria-expanded="false" >Create Reservation </button>
+
+                    <div class="reservation dropdown-menu" aria-labelledby="createReservationButton" id="createReservationForm">
+                            <form (ngSubmit)="onReservationSubmit()" #reservationForm="ngForm">
+                                
+                                <div class="form-group">
+                                    <label for="type">Type</label>
+                                    <select class="form-control" id="type"
+                                            required
+                                            [(ngModel)]="reservation.type" name="type"
+                                            #type="ngModel" required>
+                                        <option *ngFor="let type of reservationTypes" [value]="type">{{type}}</option>
+                                    </select>
+                                    <!-- <div [hidden]="type.valid || type.pristine" class="alert alert-danger">
+                                        type is required
+                                    </div> -->
+                                </div>
+                           
+                                <div class="form-group" >
+                                    <label for="date">Date</label>
+                                    <input type="date" class="form-control" id="date"
+                                        [(ngModel)]="reservation.attributes.date_time" name="date" required>
+                                </div>
+            
+                                <div class="form-group">
+                                    <label for="start">Slot Start</label>
+                                    <select class="form-control" id="start"
+                                            required
+                                            [(ngModel)]="reservation.attributes.slot_start" name="start"
+                                            #start="ngModel">
+                                        <option *ngFor="let openHour of openHours" [value]="openHour">{{openHour}}</option>
+                                    </select>
+                                    <!-- <div [hidden]="start.valid || start.pristine" class="alert alert-danger">
+                                        Slot Begin is required
+                                    </div> -->
+                                </div>
+            
+                                    <div class="form-group">
+                                            <label for="end">Slot End</label>
+                                            <select class="form-control" id="end"
+                                                    required
+                                                    [(ngModel)]="reservation.attributes.slot_end" name="end"
+                                                    #end="ngModel">
+                                                <option *ngFor="let openHour of openHours" [value]="openHour">{{openHour}}</option>
+                                            </select>
+                                            <!-- <div [hidden]="end.valid || end.pristine" class="alert alert-danger">
+                                                Slot End is required
+                                            </div> -->
+                                        </div>
+            
+                                    <div class="form-group">
+                                        <label for="guest_count">Guest Count</label>
+                                        <input type="number" class="form-control" id="guest_count"
+                                        [(ngModel)]="reservation.attributes.guest_count" name="guest_count" required>
+                                    </div>
+                           
+                                    <div class="form-group">
+                                        <label for="table">Table</label>
+                                        <select class="form-control" id="table"
+                                                required
+                                                [(ngModel)]="reservation.attributes.table_number" name="table"
+                                                #table="ngModel">
+                                            <option *ngFor="let table of tableList" [value]="table">{{table}}</option>
+                                        </select>
+                                        <!-- <div [hidden]="table.valid || table.pristine" class="alert alert-danger">
+                                            Table is required
+                                        </div> -->
+                                    </div>
+            
+                                    <div class="form-group">
+                                        <label for="mobile">Mobile</label>
+                                        <input type="text" class="form-control" id="mobile"
+                                        [(ngModel)]="reservation.attributes.guest_mobile_num" name="mobile">
+                                    </div>
+            
+                                    <div class="form-group">
+                                        <label for="name">Name</label>
+                                        <input type="text" class="form-control" id="name"
+                                        [(ngModel)]="reservation.attributes.contact_details.name" name="name">
+                                        </div>
+            
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input type="text" class="form-control" id="email"
+                                        [(ngModel)]="reservation.attributes.contact_details.email" name="email">
+                                        </div>
+               
+                                    <div class="form-group">
+                                        <label for="tags">Tags:</label>
+                                        <div *ngFor="let tag of tags">
+                                            <label>
+                                                <input type="checkbox"
+                                                        name="tags"
+                                                        value="{{tag.name}}"
+                                                        [(ngModel)]="tag.checked"/>
+                                                {{tag.name}}
+                                            </label>
+                                        </div>
+                                    
+                                    </div>
+             
+                                    <div class="form-group">
+                                        <label for="status">Status</label>
+                                        <select class="form-control" id="status"
+                                                [(ngModel)]="reservation.attributes.status" name="status"
+                                                #status="ngModel">
+                                            <option *ngFor="let status of statuses" [value]="status">{{status}}</option>
+                                        </select>
+                                     
+                                    </div>
+                                    <div>
+                                        <span>
+                                                <button type="button" class="btn btn-warning" (click)="hideCreateReservationForm()">Cancel</button>
+            
+                                        </span>
+                                        <span>
+                                                <button type="submit" class="btn btn-success" [disabled]="!reservationForm.form.valid">Submit</button>
+                                        </span>
+                                    </div>
+                            </form> 
+                 
+                 
+                       </div>
+                </span>
+
                 <span class="dropdown">
                     <button (click)="addTable()" class="btn btn-basic dropdown-toggle" type="button"
-                     id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" 
+                     id="addTableButton" data-toggle="dropdown" aria-haspopup="true" 
                      aria-expanded="false" >Add Table </button>
 
 
-            <div class="dropdown-menu addtable" aria-labelledby="dropdownMenuButton" id="me">
+            <div class="dropdown-menu addtable" aria-labelledby="addTableButton" id="addtableform">
                     <form (ngSubmit)="onTableSubmit()" #tableForm="ngForm" >
                             <div class="form-group">
                                 <label for="section">Section</label>
@@ -47,15 +175,15 @@
                                 </div> -->
                             </div>
                             <div>
-                                    <span>
-                                            <button type="button" class="btn btn-warning" (click)="hideAddTableForm()">Cancel</button>
-        
-                                    </span>
-                                    <span>
-                                            <button type="submit" class="btn btn-success"
-                                            [disabled]="!tableForm.form.valid"
-                                            >Submit</button>
-                                    </span>
+                                <span>
+                                        <button type="button" class="btn btn-warning" (click)="hideAddTableForm()">Cancel</button>
+    
+                                </span>
+                                <span>
+                                        <button type="submit" class="btn btn-success"
+                                        [disabled]="!tableForm.form.valid"
+                                        >Submit</button>
+                                </span>
                             </div>
                           
                          
@@ -65,145 +193,8 @@
             </div>
         </div>
     </nav>
-
-    <!-- <ng-container *ngIf="showAddTableForm"> -->
-            <!-- <ng-container > -->
-
-    <!-- </ng-container> -->
     
 
-    <ng-container *ngIf="showReservationForm">
-        <div class="reservation">
-                <form (ngSubmit)="onReservationSubmit()" #reservationForm="ngForm">
-                    
-                    <div class="form-group">
-                        <label for="type">Section</label>
-                        <select class="form-control" id="type"
-                                required
-                                [(ngModel)]="reservation.type" name="type"
-                                #type="ngModel">
-                            <option *ngFor="let type of reservationTypes" [value]="type">{{type}}</option>
-                        </select>
-                        <div [hidden]="type.valid || type.pristine" class="alert alert-danger">
-                            type is required
-                        </div>
-                    </div>
-               
-                    <div class="form-group" >
-                        <label for="date">Date</label>
-                        <input type="date" class="form-control" id="date"
-                            [(ngModel)]="reservation.attributes.date_time" name="date">
-                    </div>
-
-                    <div class="form-group">
-                            <label for="begin">Slot Begin</label>
-                            <select class="form-control" id="begin"
-                                    required
-                                    [(ngModel)]="reservation.attributes.slot_begin" name="begin"
-                                    #begin="ngModel">
-                                <option *ngFor="let openHour of openHours" [value]="openHour">{{openHour}}</option>
-                            </select>
-                            <div [hidden]="begin.valid || begin.pristine" class="alert alert-danger">
-                                Slot Begin is required
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                                <label for="end">Slot End</label>
-                                <select class="form-control" id="end"
-                                        required
-                                        [(ngModel)]="reservation.attributes.slot_end" name="end"
-                                        #end="ngModel">
-                                    <option *ngFor="let openHour of openHours" [value]="openHour">{{openHour}}</option>
-                                </select>
-                                <div [hidden]="end.valid || end.pristine" class="alert alert-danger">
-                                    Slot End is required
-                                </div>
-                            </div>
-
-                        <div class="form-group">
-                            <label for="guest_count">Guest Count</label>
-                            <input type="number" class="form-control" id="guest_count"
-                            [(ngModel)]="reservation.attributes.guest_count" name="guest_count">
-                        </div>
-               
-                        <div class="form-group">
-                            <label for="table">Table</label>
-                            <select class="form-control" id="table"
-                                    required
-                                    [(ngModel)]="reservation.attributes.table_number" name="table"
-                                    #table="ngModel">
-                                <option *ngFor="let table of tableList" [value]="table">{{table}}</option>
-                            </select>
-                            <div [hidden]="table.valid || table.pristine" class="alert alert-danger">
-                                Table is required
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="mobile">Mobile</label>
-                            <input type="text" class="form-control" id="mobile"
-                            [(ngModel)]="reservation.attributes.guest_mobile_num" name="mobile">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="name">Name</label>
-                            <input type="text" class="form-control" id="name"
-                            [(ngModel)]="reservation.attributes.contact_details.name" name="name">
-                            </div>
-
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="text" class="form-control" id="email"
-                            [(ngModel)]="reservation.attributes.contact_details.email" name="email">
-                            </div>
-   
-                        <div class="form-group">
-                            <label for="tags">Tags:</label>
-                            <div *ngFor="let tag of tags">
-                                <label>
-                                    <input type="checkbox"
-                                            name="tags"
-                                            value="{{tag.name}}"
-                                            [(ngModel)]="tag.checked"/>
-                                    {{tag.name}}
-                                </label>
-                            </div>
-                            <!-- <div *ngFor="let tag of tags">
-                                <input type="checkbox" value="tag">{{tag}}
-                            </div> -->
-                            <!-- <label for="tags">Section</label> -->
-
-                            <!-- <select class="form-control" id="type"
-                                    required
-                                    [(ngModel)]="reservation.type" name="type"
-                                    #type="ngModel">
-                                <option *ngFor="let tag of tags" [value]="tag">{{tag}}</option>
-                            </select> -->
-                            <!-- <div [hidden]="type.valid || type.pristine" class="alert alert-danger">
-                                type is required
-                            </div> -->
-                        </div>
- 
-                        <div class="form-group">
-                            <label for="status">Status</label>
-                            <select class="form-control" id="status"
-                                    required
-                                    [(ngModel)]="reservation.attributes.status" name="status"
-                                    #status="ngModel">
-                                <option *ngFor="let status of statuses" [value]="status">{{status}}</option>
-                            </select>
-                            <!-- <div [hidden]="status.valid || status.pristine" class="alert alert-danger">
-                                Status is required
-                            </div> -->
-                        </div>
-                        <div>
-                  <button type="submit" class="btn btn-success" [disabled]="!reservationForm.form.valid">Submit</button>
-                </div>
-                </form> 
-     
-     
-           </div>
-        </ng-container>
+        
 
 </div>

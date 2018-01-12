@@ -1,5 +1,5 @@
 .addtable {
-    width: 150px;
+    width: 175px;
     height: 200px;
     border:1px solid rgb(216, 214, 214); 
     padding: 15px; 
@@ -20,11 +20,14 @@
 }
 
 .reservation {
-    width: 90%; 
-    height: 200px;
+    width: 525px; 
+    height: 300px;
     border:1px solid rgb(216, 214, 214);
     padding: 5px; 
     border-radius: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    text-align: right;
 
     form {
         height: 80%;

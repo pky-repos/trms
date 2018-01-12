@@ -37,7 +37,7 @@ export class CalenderComponent implements OnInit {
 
     this.httpCient.get('http://localhost:3000/api/table/get_tables').subscribe(data => {
       this.tables = data['tables'];
-      console.log(data);
+      //console.log(data);
 
       this.tables.forEach(table => {
         this.httpCient.get('http://localhost:3000/api/table/get_table_reservations/' + table['id'])
@@ -49,8 +49,8 @@ export class CalenderComponent implements OnInit {
             tableId: table['id'],
             slot: Array(this.closing - this.opening).fill({}).map((val, index)=>(
               {
-                'start': this.opening * 100 + index * 100,
-                'end': this.opening * 100 + index * 100 + 100,
+                'start': this.opening + index,
+                'end': this.opening + index + 1,
                 'reservation_id': 0
               }
             )).map(slot => {
@@ -68,11 +68,13 @@ export class CalenderComponent implements OnInit {
               return slot['reservation_id'];
             })
           });
-          console.log(this.tablesReservations);
+          //console.log(this.tablesReservations);
         },
         err => console.log(err) );
       });
     });
+    
+    console.log('Reservations - ', this.tablesReservations);
 
   }
 

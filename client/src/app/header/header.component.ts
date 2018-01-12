@@ -68,16 +68,21 @@ export class HeaderComponent implements OnInit {
   addTable() {
     console.log('add table');
     // this.showAddTableForm = !this.showAddTableForm;
-    document.getElementById("me").style.display = 'block';
+    let addTableForm = document.getElementById("addtableform");
+    addTableForm.style.display = (addTableForm.style.display == 'block')? 'none': 'block';
   }
 
   createReservation() {
     console.log('create Reservation');
-    this.showReservationForm = !this.showReservationForm;
-  }
+    let createReservationForm = document.getElementById("createReservationForm");
+    createReservationForm.style.display = (createReservationForm.style.display == 'block')? 'none': 'block';  }
 
   hideAddTableForm() {
-    document.getElementById("me").style.display = 'none';
+    document.getElementById("addtableform").style.display = 'none';
+  }
+
+  hideCreateReservationForm() {
+    document.getElementById("createReservationForm").style.display = 'none';
   }
 
   onTableSubmit() {
@@ -87,23 +92,35 @@ export class HeaderComponent implements OnInit {
           console.log(data);
         },
         err => console.log(err));
-        this.showAddTableForm = !this.showAddTableForm;
+        // this.showAddTableForm = !this.showAddTableForm;
         this.table = new Table('', 0);
         this.hideAddTableForm();    }
   }
 
   onReservationSubmit() {
+    console.log('1  jmmmmmmmm');
     if(this.reservation.type != '' && this.reservation.attributes.table_number != 0){
-      
+      console.log('2  jmmmmmmmm');
+
       console.log(this.reservation);
-        this.httpCient.post('http://localhost:3000/api/reservation/add_reservation',this.reservation).subscribe(data=>{
-          console.log(data);
-        },
-        err => console.log(err));
-        this.showReservationForm = !this.showReservationForm;
-        // this.reservation = new Reservation('', new Attributes(new Date(0, 0), 0, 0, 0, 0, '', 
-        // new ContactDetails('', ''), [new Tag('', 0, false)], ''));     
-       }
+      this.reservation.attributes.slot_start = +(this.reservation.attributes.slot_start.toString().split(":")[0]);
+      this.reservation.attributes.slot_end = +this.reservation.attributes.slot_end.toString().split(":")[0];
+      
+      this.tags = this.tags.filter(tag => tag.checked).map(tag => (tag.name));
+      // this.tags.map(tag => (tag.name));
+      console.log(this.tags);
+
+      this.reservation.attributes.tags = this.tags;
+
+      this.httpCient.post('http://localhost:3000/api/reservation/add_reservation',this.reservation).subscribe(data=>{
+        console.log(data);
+      },
+      err => console.log(err));
+      // this.showReservationForm = !this.showReservationForm;
+      this.reservation = new Reservation('', new Attributes(new Date(0, 0), 0, 0, 0, 0, '', 
+      new ContactDetails('', ''), [new Tag('', 0, false)], ''));    
+      this.hideCreateReservationForm(); 
+      }
   }
 
   
