@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import {TableSchedule} from '../models/TableSchedule';
 import {Table} from '../models/Table';
 import { HttpClient } from '@angular/common/http';
@@ -10,6 +11,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class CalenderComponent implements OnInit {
 
+  currentDate: string;
  
   opening: number;
   closing: number;
@@ -23,9 +25,11 @@ export class CalenderComponent implements OnInit {
 
   slots: any[] = [];
 
-  constructor(private httpCient: HttpClient) { }
+  constructor(private httpCient: HttpClient, private datepipe: DatePipe) { }
 
   ngOnInit() {
+
+    this.currentDate = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
 
     this.opening = 11;
     this.closing = 21;
@@ -40,7 +44,7 @@ export class CalenderComponent implements OnInit {
       //console.log(data);
 
       this.tables.forEach(table => {
-        this.httpCient.get('http://localhost:3000/api/table/get_table_reservations/' + table['id'])
+        this.httpCient.get('http://localhost:3000/api/table/get_table_reservations/' + table['id'] + '/' + this.currentDate)
         .subscribe(tableReservation => {
           
           //this.slots[table['id']] = slotInit;

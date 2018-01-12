@@ -1,10 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
+var Rx = require('rxjs/Rx');
+
+
 import {CreateReservationComponent} from '../create-reservation/create-reservation.component';
 
 import {Table} from '../models/Table';
 import {Reservation, Attributes, ContactDetails, Tag} from '../models/Reservation';
+
+import {CommonService} from '../common.service';
 
 @Component({
   selector: 'app-header',
@@ -32,9 +37,17 @@ export class HeaderComponent implements OnInit {
 
   private statuses: [string];
 
-  constructor(private httpCient: HttpClient) { }
+  constructor(private httpCient: HttpClient, private commonService: CommonService) { }
 
   ngOnInit() {
+
+    let a = this.commonService;
+    console.log('service - ', a);
+
+    Rx.Observable.of(1,2,3).subscribe(d => {
+      console.log(d);
+    }); // etc
+
     this.opening = 11;
     this.closing = 21;
 

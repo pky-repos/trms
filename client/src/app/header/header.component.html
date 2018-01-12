@@ -10,9 +10,9 @@
                         <li><a href="#"> {{currentDate | date: 'E'}}</a></li>
                 </ul>
                                         
-                <button class="btn btn-primary navbar-btn">Prev</button>
-                <button class="btn btn-default">Today</button>
-                <button class="btn btn-primary">Next</button>
+                <button class="btn btn-primary navbar-btn" (click)="prev()">Prev</button>
+                <button class="btn btn-default navbar-btn">Today</button>
+                <button class="btn btn-primary navbar-btn" (click)="next()">Next</button>
                 
                 <span class="dropdown">
                     <button (click)="createReservation()" class="btn btn-info dropdown-toggle" type="button"

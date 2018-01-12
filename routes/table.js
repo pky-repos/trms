@@ -46,8 +46,8 @@ router.get('/get_tables', (req, res) => {
     });
 });
 
-router.get('/get_table_reservations/:id', (req, res) => {
-    Table.getTableReservations(req.params.id, (err, reservations) => {
+router.get('/get_table_reservations/:id/:date', (req, res) => {
+    Table.getTableReservations(req.params.id, req.params.date, (err, reservations) => {
         if(err){
             res.json({success:false, message: `Failed to get the table Reservations. Error: ${err}`});
         }

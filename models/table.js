@@ -49,8 +49,14 @@ getTables = function(cb){
 
 module.exports.getTables = getTables;
 
-getTableReservations = function(id, cb){
-    Reservation.Reservation.find({'attributes.table_number': id}, cb);
+getTableReservations = function(id, date, cb){
+    console.log('date', date);
+    console.log(new Date(date));
+    console.log(new Date('2012-08-29'));
+    Reservation.Reservation.find({'attributes.table_number': id, 'attributes.date_time': {
+        $gte: new Date(date), 
+        $lte: new Date(date).getTime() + 86400000
+    }}, cb);
 }
 
 module.exports.getTableReservations = getTableReservations;
