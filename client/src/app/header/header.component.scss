@@ -1,0 +1,41 @@
+.addtable {
+    width: 150px;
+    height: 200px;
+    border:1px solid rgb(216, 214, 214); 
+    padding: 15px; 
+    border-radius: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    text-align: right;
+
+
+    // form {
+    //     height: 80%;
+    //     .e {
+    //         margin: 5px;
+    //         width: 65px;
+    //         float: left;
+    //     }
+    // }
+}
+
+.reservation {
+    width: 90%; 
+    height: 200px;
+    border:1px solid rgb(216, 214, 214);
+    padding: 5px; 
+    border-radius: 5px;
+
+    form {
+        height: 80%;
+        div {
+            margin: 5px;
+            width: 160px;
+            float: left;
+
+            button {
+                margin: auto;
+            }
+        }
+    }
+}

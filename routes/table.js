@@ -20,8 +20,9 @@ router.put('/edit_table/:id', (req, res) => {
     Table.editTable(id, table, function(err, table){
         if(err){
             res.json({success:false, message: `Failed to update the table. Error: ${err}`});
+        } else {
+            res.json({success:true, message: "updated successfully"});
         }
-        res.json({success:true, message: "updated successfully"});
     });
 });
 
