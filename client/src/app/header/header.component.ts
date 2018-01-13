@@ -93,6 +93,8 @@ export class HeaderComponent implements OnInit {
 
   today() {
     this.currentDate = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
+    this.commonService.setCurrentDate(this.currentDate);
+
   }
 
   next() {
