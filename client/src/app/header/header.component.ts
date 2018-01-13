@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-var Rx = require('rxjs/Rx');
+import { DatePipe } from '@angular/common';
 
+// var Rx = require('rxjs/Rx');
 
 import {CreateReservationComponent} from '../create-reservation/create-reservation.component';
 
@@ -10,6 +11,7 @@ import {Table} from '../models/Table';
 import {Reservation, Attributes, ContactDetails, Tag} from '../models/Reservation';
 
 import {CommonService} from '../common.service';
+
 
 @Component({
   selector: 'app-header',
@@ -21,7 +23,7 @@ export class HeaderComponent implements OnInit {
   private closing: number;
   private openHours: string[];
 
-  private currentDate: Number = Date.now();
+  private currentDate: string;
   private table: Table;
   private sections: [string]
   private capacities: [Number];
@@ -37,16 +39,13 @@ export class HeaderComponent implements OnInit {
 
   private statuses: [string];
 
-  constructor(private httpCient: HttpClient, private commonService: CommonService) { }
+  constructor(private httpCient: HttpClient,  private datepipe: DatePipe,  private commonService: CommonService) { }
 
   ngOnInit() {
 
-    let a = this.commonService;
-    console.log('service - ', a);
+    this.currentDate = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
 
-    Rx.Observable.of(1,2,3).subscribe(d => {
-      console.log(d);
-    }); // etc
+    this.commonService.setCurrentDate(this.currentDate);
 
     this.opening = 11;
     this.closing = 21;
@@ -76,6 +75,38 @@ export class HeaderComponent implements OnInit {
     });
 
     this.statuses = [ 'Arrived', 'Seated', 'Finished', 'Cancel', 'No-Show'];
+  }
+
+  prev() {
+    console.log(this.currentDate);
+
+    this.currentDate = this.datepipe.transform( new Date(
+      new Date(this.currentDate).getFullYear(),
+      new Date(this.currentDate).getMonth(),
+      new Date(this.currentDate).getDate() - 1
+    ), 'yyyy-MM-dd');
+
+    console.log(this.currentDate);
+
+    this.commonService.setCurrentDate(this.currentDate);
+  }
+
+  today() {
+    this.currentDate = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
+  }
+
+  next() {
+    console.log(this.currentDate);
+
+    this.currentDate = this.datepipe.transform( new Date(
+      new Date(this.currentDate).getFullYear(),
+      new Date(this.currentDate).getMonth(),
+      new Date(this.currentDate).getDate() + 1
+    ), 'yyyy-MM-dd');
+
+    console.log(this.currentDate);
+
+    this.commonService.setCurrentDate(this.currentDate);
   }
 
   addTable() {
@@ -111,17 +142,13 @@ export class HeaderComponent implements OnInit {
   }
 
   onReservationSubmit() {
-    console.log('1  jmmmmmmmm');
     if(this.reservation.type != '' && this.reservation.attributes.table_number != 0){
-      console.log('2  jmmmmmmmm');
 
       console.log(this.reservation);
       this.reservation.attributes.slot_start = +(this.reservation.attributes.slot_start.toString().split(":")[0]);
       this.reservation.attributes.slot_end = +this.reservation.attributes.slot_end.toString().split(":")[0];
       
       this.tags = this.tags.filter(tag => tag.checked).map(tag => (tag.name));
-      // this.tags.map(tag => (tag.name));
-      console.log(this.tags);
 
       this.reservation.attributes.tags = this.tags;
 
@@ -129,12 +156,9 @@ export class HeaderComponent implements OnInit {
         console.log(data);
       },
       err => console.log(err));
-      // this.showReservationForm = !this.showReservationForm;
       this.reservation = new Reservation('', new Attributes(new Date(0, 0), 0, 0, 0, 0, '', 
       new ContactDetails('', ''), [new Tag('', 0, false)], ''));    
       this.hideCreateReservationForm(); 
       }
-  }
-
-  
+  } 
 }

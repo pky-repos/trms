@@ -1,14 +1,19 @@
 import { Injectable } from '@angular/core';
-var Rx = require('rxjs/Rx');
+// var Rx = require('rxjs/Rx');
+import {Observable, Subject} from 'rxjs';
 
 @Injectable()
 export class CommonService {
+  public currentDateSubject = new Subject<string>();
 
   constructor() {
-    Rx.Observable.of(1,2,3).map(n => (console.log(n))); // etc
-  
+   }  
 
+   setCurrentDate(date: string) {
+    this.currentDateSubject.next(date);
    }
 
-
+   getCurrentDate(): Observable<string>{
+    return this.currentDateSubject.asObservable();
+   }
 }

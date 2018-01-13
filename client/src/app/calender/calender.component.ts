@@ -4,6 +4,9 @@ import {TableSchedule} from '../models/TableSchedule';
 import {Table} from '../models/Table';
 import { HttpClient } from '@angular/common/http';
 
+import {CommonService} from '../common.service';
+import { Observable } from 'rxjs/Observable';
+
 @Component({
   selector: 'app-calender',
   templateUrl: './calender.component.html',
@@ -12,24 +15,27 @@ import { HttpClient } from '@angular/common/http';
 export class CalenderComponent implements OnInit {
 
   currentDate: string;
- 
   opening: number;
   closing: number;
   openHours: string[];
-
   tables: Table[];
-
   tablesReservations: any[] = [];
-
+  tempTR: any[] = [];
   slotInit: any[] = [];
-
   slots: any[] = [];
 
-  constructor(private httpCient: HttpClient, private datepipe: DatePipe) { }
+  constructor(private httpCient: HttpClient, private datepipe: DatePipe, 
+    private commonService: CommonService) { }
 
   ngOnInit() {
 
     this.currentDate = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
+
+    this.commonService.getCurrentDate().subscribe((date) => {
+      this.currentDate = date;
+      console.log('works');
+      this.fillTable();
+    })
 
     this.opening = 11;
     this.closing = 21;
@@ -38,17 +44,21 @@ export class CalenderComponent implements OnInit {
       fill(0).map((x, i)=> ((i + this.opening).toString() + ':00'));
     console.log(this.openHours);
     
+    this.fillTable();
+  }
 
+  fillTable() {
+ {
+
+   console.log('inside fillTable');
+   this.tablesReservations = [];
     this.httpCient.get('http://localhost:3000/api/table/get_tables').subscribe(data => {
       this.tables = data['tables'];
-      //console.log(data);
 
       this.tables.forEach(table => {
         this.httpCient.get('http://localhost:3000/api/table/get_table_reservations/' + table['id'] + '/' + this.currentDate)
         .subscribe(tableReservation => {
-          
-          //this.slots[table['id']] = slotInit;
-          //console.log('fresh table slots for table - ', table['id'], slotInit);
+         
           this.tablesReservations.push({
             tableId: table['id'],
             slot: Array(this.closing - this.opening).fill({}).map((val, index)=>(
@@ -79,6 +89,8 @@ export class CalenderComponent implements OnInit {
     });
     
     console.log('Reservations - ', this.tablesReservations);
+    
+  }
 
   }
 
