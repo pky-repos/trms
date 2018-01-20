@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { DatePipe } from '@angular/common';
-
-// var Rx = require('rxjs/Rx');
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
 import {CreateReservationComponent} from '../create-reservation/create-reservation.component';
 
@@ -29,17 +28,11 @@ export class HeaderComponent implements OnInit {
   private capacities: [Number];
   private showAddTableForm: boolean;
 
-  private reservation: Reservation;
-  private reservationTypes: [string];
-  private showReservationForm: boolean;
-
   private tableList: number;
 
-  private tags: any;
 
-  private statuses: [string];
-
-  constructor(private httpCient: HttpClient,  private datepipe: DatePipe,  private commonService: CommonService) { }
+  constructor(private httpCient: HttpClient,  private datepipe: DatePipe, 
+     private commonService: CommonService, public dialog: MatDialog) { }
 
   ngOnInit() {
 
@@ -59,22 +52,11 @@ export class HeaderComponent implements OnInit {
     this.capacities = [1, 2, 3, 4, 5, 6, 7, 8];
     this.showAddTableForm = false;
 
-    this.reservation = new Reservation('', new Attributes(new Date(0, 0), 0, 0, 0, 0, '', 
-                                          new ContactDetails('', ''), [new Tag('', 0, false)], ''));
-    this.reservationTypes = ['Walk-In','Phone','Online'];
-    this.showReservationForm = false;
-
+    
     this.httpCient.get('http://localhost:3000/api/table/get_tables').subscribe(data => {
       this.tableList = data['tables'].map(table => (table['id']));
       console.log(data);
     });
-
-    this.tags = ['Birthday', 'Anniversary', 'A la carte/ Buffet', 'Zomato/ Dineout', 'Outside Requested',
-    'Indoor Requested', 'Window Requested', 'Smoking Area'].map((tag, i) => {
-      return {name: tag, value: i, checked: false}
-    });
-
-    this.statuses = [ 'Arrived', 'Seated', 'Finished', 'Cancel', 'No-Show'];
   }
 
   prev() {
@@ -113,7 +95,6 @@ export class HeaderComponent implements OnInit {
 
   addTable() {
     console.log('add table');
-    // this.showAddTableForm = !this.showAddTableForm;
     let addTableForm = document.getElementById("addtableform");
     addTableForm.style.display = (addTableForm.style.display == 'block')? 'none': 'block';
   }
@@ -143,24 +124,15 @@ export class HeaderComponent implements OnInit {
         this.hideAddTableForm();    }
   }
 
-  onReservationSubmit() {
-    if(this.reservation.type != '' && this.reservation.attributes.table_number != 0){
+  openDialog(): void {
+    let dialogRef = this.dialog.open(CreateReservationComponent, {
+      width: '600px',
+      height: '350px',
+      data: { name: 'pankaj'}
+    });
 
-      console.log(this.reservation);
-      this.reservation.attributes.slot_start = +(this.reservation.attributes.slot_start.toString().split(":")[0]);
-      this.reservation.attributes.slot_end = +this.reservation.attributes.slot_end.toString().split(":")[0];
-      
-      this.tags = this.tags.filter(tag => tag.checked).map(tag => (tag.name));
-
-      this.reservation.attributes.tags = this.tags;
-
-      this.httpCient.post('http://localhost:3000/api/reservation/add_reservation',this.reservation).subscribe(data=>{
-        console.log(data);
-      },
-      err => console.log(err));
-      this.reservation = new Reservation('', new Attributes(new Date(0, 0), 0, 0, 0, 0, '', 
-      new ContactDetails('', ''), [new Tag('', 0, false)], ''));    
-      this.hideCreateReservationForm(); 
-      }
-  } 
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  }
 }

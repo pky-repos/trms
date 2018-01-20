@@ -1,8 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+
+import {CreateReservationComponent} from '../create-reservation/create-reservation.component';
+
 import {TableSchedule} from '../models/TableSchedule';
 import {Table} from '../models/Table';
-import { HttpClient } from '@angular/common/http';
+
+import {TileComponent} from '../tile/tile.component';
 
 import {CommonService} from '../common.service';
 import { Observable } from 'rxjs/Observable';
@@ -24,8 +30,12 @@ export class CalenderComponent implements OnInit {
   slotInit: any[] = [];
   slots: any[] = [];
 
+  showForm: boolean = false;
+
+  dialogRef: any;
+
   constructor(private httpCient: HttpClient, private datepipe: DatePipe, 
-    private commonService: CommonService) { }
+    private commonService: CommonService, public dialog: MatDialog) { }
 
   ngOnInit() {
 
@@ -33,7 +43,6 @@ export class CalenderComponent implements OnInit {
 
     this.commonService.getCurrentDate().subscribe((date) => {
       this.currentDate = date;
-      console.log('works');
       this.fillTable();
     })
 
@@ -48,7 +57,7 @@ export class CalenderComponent implements OnInit {
   }
 
   fillTable() {
- {
+  {
 
    console.log('inside fillTable');
    this.tablesReservations = [];
@@ -91,7 +100,27 @@ export class CalenderComponent implements OnInit {
     console.log('Reservations - ', this.tablesReservations);
     
   }
+  }
 
+  trackMouse(e, tableId, slot){
+    console.log('mouse X = ', e.clientX, ' Y = ', e.clientY, tableId, slot);
+    // this.showForm = !this.showForm;
+   
+    this.openDialog(tableId, slot);
+
+  }
+
+  openDialog(tableId, slot): void {
+    this.dialogRef = this.dialog.open(CreateReservationComponent, {
+      width: '600px',
+      height: '350px',
+      data: {currentDate: this.currentDate, tableId: tableId, slot: slot}
+    });
+
+    this.dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      this.fillTable();
+    });
   }
 
 }

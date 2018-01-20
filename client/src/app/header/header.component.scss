@@ -18,27 +18,3 @@
     //     }
     // }
 }
-
-.reservation {
-    width: 525px; 
-    height: 300px;
-    border:1px solid rgb(216, 214, 214);
-    padding: 5px; 
-    border-radius: 5px;
-    margin-left: 10px;
-    margin-right: 10px;
-    text-align: right;
-
-    form {
-        height: 80%;
-        div {
-            margin: 5px;
-            width: 160px;
-            float: left;
-
-            button {
-                margin: auto;
-            }
-        }
-    }
-}

@@ -1,9 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import {MatDialogModule} from '@angular/material';
+import {MatDialogModule,MatSelectModule} from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {HttpClientModule} from '@angular/common/http';
-import { FormsModule }   from '@angular/forms';
+import { FormsModule ,ReactiveFormsModule}   from '@angular/forms';
 import { DatePipe } from '@angular/common';
 
 import { AppComponent } from './app.component';
@@ -12,21 +12,27 @@ import { CreateReservationComponent } from './create-reservation/create-reservat
 import { CalenderComponent } from './calender/calender.component';
 
 import {CommonService} from './common.service';
+import { TileComponent } from './tile/tile.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     CreateReservationComponent,
-    CalenderComponent
+    CalenderComponent,
+    TileComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     MatDialogModule,
-    FormsModule
+    BrowserAnimationsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatSelectModule
     
   ],
+  entryComponents: [CreateReservationComponent],
   providers: [DatePipe, CommonService],
   bootstrap: [AppComponent]
 })
