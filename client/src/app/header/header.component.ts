@@ -126,7 +126,7 @@ export class HeaderComponent implements OnInit {
 
   openDialog(): void {
     let dialogRef = this.dialog.open(CreateReservationComponent, {
-      width: '600px',
+      width: '700px',
       height: '350px',
       data: { name: 'pankaj'}
     });

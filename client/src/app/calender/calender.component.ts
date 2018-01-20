@@ -112,7 +112,7 @@ export class CalenderComponent implements OnInit {
 
   openDialog(tableId, slot): void {
     this.dialogRef = this.dialog.open(CreateReservationComponent, {
-      width: '600px',
+      width: '700px',
       height: '350px',
       data: {currentDate: this.currentDate, tableId: tableId, slot: slot}
     });

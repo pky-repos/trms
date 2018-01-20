@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import {MatDialogModule,MatSelectModule} from '@angular/material';
+import {MatDialogModule,MatSelectModule, MatDatepickerModule, MatNativeDateModule, MatInputModule} from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {HttpClientModule} from '@angular/common/http';
 import { FormsModule ,ReactiveFormsModule}   from '@angular/forms';
@@ -29,8 +29,10 @@ import { TileComponent } from './tile/tile.component';
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
-    MatSelectModule
-    
+    MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatInputModule
   ],
   entryComponents: [CreateReservationComponent],
   providers: [DatePipe, CommonService],
