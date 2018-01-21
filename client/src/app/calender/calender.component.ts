@@ -125,7 +125,7 @@ export class CalenderComponent implements OnInit {
       height: '350px',
       data: new Reservation('', new Attributes(new Date(this.currentDate),
       +this.openHours[slot], +this.openHours[slot + 1], 0, tableId, '', 
-      new ContactDetails('', ''), [new Tag('', 0, false)], ''))
+      new ContactDetails('', ''), [''], ''))
     });
     // {currentDate: this.currentDate, tableId: tableId, slot: slot}
     this.dialogRef.afterClosed().subscribe(result => {

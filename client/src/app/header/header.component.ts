@@ -128,7 +128,8 @@ export class HeaderComponent implements OnInit {
     let dialogRef = this.dialog.open(CreateReservationComponent, {
       width: '700px',
       height: '350px',
-      data: { name: 'pankaj'}
+      data: new Reservation('', new Attributes(new Date(this.currentDate), 0, 0, 0, 0, '', 
+              new ContactDetails('', ''), [''], ''))
     });
 
     dialogRef.afterClosed().subscribe(result => {

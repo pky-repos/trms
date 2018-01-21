@@ -14,7 +14,7 @@ export class Attributes {
         public table_number: number,
         public guest_mobile_num: string,
         public contact_details: ContactDetails,
-        public tags: [Tag],
+        public tags: [string],
         public status: string
     ){ }
 }
