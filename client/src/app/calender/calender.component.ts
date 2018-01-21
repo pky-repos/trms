@@ -10,6 +10,8 @@ import {Table} from '../models/Table';
 
 import {TileComponent} from '../tile/tile.component';
 
+import {DragdropDirective} from '../dragdrop.directive';
+
 import {CommonService} from '../common.service';
 import { Observable } from 'rxjs/Observable';
 
@@ -103,10 +105,10 @@ export class CalenderComponent implements OnInit {
   }
 
   trackMouse(e, tableId, slot){
-    console.log('mouse X = ', e.clientX, ' Y = ', e.clientY, tableId, slot);
+    console.log('calender - mouse X = ', e.clientX, ' Y = ', e.clientY, tableId, slot);
     // this.showForm = !this.showForm;
    
-    this.openDialog(tableId, slot);
+    // this.openDialog(tableId, slot);
 
   }
 
@@ -121,6 +123,15 @@ export class CalenderComponent implements OnInit {
       console.log('The dialog was closed');
       this.fillTable();
     });
+  }
+
+  onClick(e){
+    console.log('tile is clicked - ',e);
+  }
+
+
+  onDragEnter(e){
+    console.log('tile is dragged - ',e);
   }
 
 }

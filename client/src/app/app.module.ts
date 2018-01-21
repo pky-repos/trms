@@ -1,6 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import {MatDialogModule,MatSelectModule, MatDatepickerModule, MatNativeDateModule, MatInputModule} from '@angular/material';
+import {MatDialogModule,
+        MatSelectModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatInputModule} from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {HttpClientModule} from '@angular/common/http';
 import { FormsModule ,ReactiveFormsModule}   from '@angular/forms';
@@ -13,6 +17,7 @@ import { CalenderComponent } from './calender/calender.component';
 
 import {CommonService} from './common.service';
 import { TileComponent } from './tile/tile.component';
+import { DragdropDirective } from './dragdrop.directive';
 
 @NgModule({
   declarations: [
@@ -20,7 +25,8 @@ import { TileComponent } from './tile/tile.component';
     HeaderComponent,
     CreateReservationComponent,
     CalenderComponent,
-    TileComponent
+    TileComponent,
+    DragdropDirective
   ],
   imports: [
     BrowserModule,

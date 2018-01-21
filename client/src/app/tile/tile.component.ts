@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, HostListener, ElementRef } from '@angular/core';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import {CreateReservationComponent} from '../create-reservation/create-reservation.component';
 
@@ -14,7 +14,14 @@ export class TileComponent implements OnInit {
 
   showForm: boolean; 
 
-  constructor(public dialog: MatDialog) { }
+  // @HostListener('dragenter', ['$event'])
+  // onDragEnter(event) {
+  //   console.log(event);
+  // }
+
+  constructor(public dialog: MatDialog, private elementRef: ElementRef) {
+    // this.elementRef.nativeElement.draggable = true;
+   }
 
   ngOnInit() {
 
