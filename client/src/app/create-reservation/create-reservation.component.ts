@@ -35,7 +35,7 @@ export class CreateReservationComponent implements OnInit {
 
   constructor(private httpCient: HttpClient,  private datepipe: DatePipe,  
     private commonService: CommonService, public dialogRef: MatDialogRef<CreateReservationComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any, private fb: FormBuilder) { }
+    @Inject(MAT_DIALOG_DATA) public data: Reservation, private fb: FormBuilder) { }
 
   ngOnInit() {
 
@@ -67,12 +67,13 @@ export class CreateReservationComponent implements OnInit {
     console.log(this.data);
 
     if (Object.keys(this.data).length != 0){
-      console.log('coming from calender');
-      this.reservation.attributes.date_time =this.data['currentDate'];
+      // this.reservation.attributes.date_time =this.data['currentDate'];
 
-      this.reservation.attributes.slot_start = this.openHours[this.data['slot']] ;
-      this.reservation.attributes.slot_end = this.openHours[this.data['slot'] + 1] ;
-      this.reservation.attributes.table_number = this.data['tableId'];
+      // this.reservation.attributes.slot_start = this.openHours[this.data['slot']] ;
+      // this.reservation.attributes.slot_end = this.openHours[this.data['slot'] + 1] ;
+      // this.reservation.attributes.table_number = this.data['tableId'];
+      this.reservation = this.data;
+      console.log('data from tile', this.reservation.attributes);
     }
 
     this.createForm();
@@ -81,20 +82,20 @@ export class CreateReservationComponent implements OnInit {
 
   createForm() {
     this.reservationForm = this.fb.group({
-      type: ['',  Validators.required],
+      type: [this.reservation.type || '',  Validators.required],
       attributes: this.fb.group({
-        date_time: [this.reservation.attributes.date_time, Validators.required],
-        slot_start: [this.reservation.attributes.slot_start,  Validators.required],
-        slot_end: [this.reservation.attributes.slot_end,  Validators.required],
-        guest_count: ['',  Validators.required],  
-        table_number: [this.reservation.attributes.table_number,  Validators.required],
-        mobile: '',
+        date_time: [this.reservation.attributes.date_time || '', Validators.required],
+        slot_start: [this.reservation.attributes.slot_start || '',  Validators.required],
+        slot_end: [this.reservation.attributes.slot_end || '',  Validators.required],
+        guest_count: [this.reservation.attributes.guest_count || '',  Validators.required],  
+        table_number: [this.reservation.attributes.table_number || '' ,  Validators.required],
+        mobile: [this.reservation.attributes.guest_mobile_num || ''],
         contact_details: this.fb.group({
-          name: '',
-          email: '',
+          name: [this.reservation.attributes.contact_details.name || ''],
+          email: [this.reservation.attributes.contact_details.email || ''],
         }),
-        tags: '',
-        status: ''
+        tags: [this.reservation.attributes.tags || ''],
+        status: [this.reservation.attributes.status || '']
       })
       
     });
@@ -111,8 +112,8 @@ export class CreateReservationComponent implements OnInit {
 
       console.log('reactive form data' ,this.reservationForm.value);
      
-      this.reservation.attributes.slot_start = +(this.reservation.attributes.slot_start.toString().split(":")[0]);
-      this.reservation.attributes.slot_end = +this.reservation.attributes.slot_end.toString().split(":")[0];
+      // this.reservation.attributes.slot_start = +(this.reservation.attributes.slot_start.toString().split(":")[0]);
+      // this.reservation.attributes.slot_end = +this.reservation.attributes.slot_end.toString().split(":")[0];
 
       // this.reservationForm.get('attributes.slot_start').value =  +(this.reservationForm.get('attributes.slot_start').toString().split(":")[0]);
       // this.tags = this.tags.filter(tag => tag.checked).map(tag => (tag.name));

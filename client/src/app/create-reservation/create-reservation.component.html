@@ -1,4 +1,4 @@
-<div class="reservation">
+<div class="reservation" *ngIf="data">
     <form (ngSubmit)="onReservationSubmit()" [formGroup]="reservationForm">
         
             <mat-form-field>

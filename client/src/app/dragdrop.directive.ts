@@ -15,7 +15,7 @@ export class DragdropDirective {
     // });
     let div = el.nativeElement.querySelector('div')
     console.log('div - ',div);
-    this.el.nativeElement.style.position = "absolute";
+    // this.el.nativeElement.style.position = "absolute";
 
     // this.el.nativeElement.style.top = this.el.nativeElement.offsetTop;
 

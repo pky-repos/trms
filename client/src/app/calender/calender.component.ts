@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
-
+import {Reservation, Attributes, ContactDetails, Tag} from '../models/Reservation';
 import {CreateReservationComponent} from '../create-reservation/create-reservation.component';
 
 import {TableSchedule} from '../models/TableSchedule';
@@ -25,7 +25,7 @@ export class CalenderComponent implements OnInit {
   currentDate: string;
   opening: number;
   closing: number;
-  openHours: string[];
+  openHours: any[];
   tables: Table[];
   tablesReservations: any[] = [];
   tempTR: any[] = [];
@@ -41,6 +41,13 @@ export class CalenderComponent implements OnInit {
 
   ngOnInit() {
 
+    this.opening = 11;
+    this.closing = 21;
+
+    this.openHours = Array(this.closing - this.opening).
+      fill(0).map((x, i)=> ((i + this.opening).toString() + ':00'));
+
+
     this.currentDate = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
 
     this.commonService.getCurrentDate().subscribe((date) => {
@@ -52,7 +59,7 @@ export class CalenderComponent implements OnInit {
     this.closing = 21;
 
     this.openHours = Array(this.closing - this.opening).
-      fill(0).map((x, i)=> ((i + this.opening).toString() + ':00'));
+      fill(0).map((x, i)=> ((i + this.opening)));
     console.log(this.openHours);
     
     this.fillTable();
@@ -108,7 +115,7 @@ export class CalenderComponent implements OnInit {
     console.log('calender - mouse X = ', e.clientX, ' Y = ', e.clientY, tableId, slot);
     // this.showForm = !this.showForm;
    
-    // this.openDialog(tableId, slot);
+    this.openDialog(tableId, slot);
 
   }
 
@@ -116,9 +123,11 @@ export class CalenderComponent implements OnInit {
     this.dialogRef = this.dialog.open(CreateReservationComponent, {
       width: '700px',
       height: '350px',
-      data: {currentDate: this.currentDate, tableId: tableId, slot: slot}
+      data: new Reservation('', new Attributes(new Date(this.currentDate),
+      +this.openHours[slot], +this.openHours[slot + 1], 0, tableId, '', 
+      new ContactDetails('', ''), [new Tag('', 0, false)], ''))
     });
-
+    // {currentDate: this.currentDate, tableId: tableId, slot: slot}
     this.dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
       this.fillTable();

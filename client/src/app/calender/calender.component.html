@@ -1,12 +1,9 @@
-<div style="color: #000000"  (click)=onClick($event)
-draggable="true" (dragenter)="onDragEnter($event)" >hasjh</div>
-
 <div style="text-align: center;">
-  {{currentDate}}
-  <table class="table table-hover" style="padding:10px;">
+  <!-- {{currentDate}} -->
+  <table class="table table-striped" style="padding:10px;">
     <tr>
       <td>
-        <table class="table table-hover">
+        <table class="table table-striped">
           <tr>
             <td></td>
           </tr>
@@ -18,7 +15,7 @@ draggable="true" (dragenter)="onDragEnter($event)" >hasjh</div>
         </table>
       </td>
       <td>
-        <table class="table table-hover" id="tableReservations">
+        <table class="table table-striped" id="tableReservations">
           <thead>
             <tr>
               <ng-container *ngFor="let hour of openHours"> 
@@ -40,7 +37,6 @@ draggable="true" (dragenter)="onDragEnter($event)" >hasjh</div>
                       <!-- <div *ngIf="showForm">
                         <app-create-reservation></app-create-reservation>
                       </div> -->
-                      <div dragdrop>hasjh</div>
                     </ng-container>
                   </td>
                 </ng-container>

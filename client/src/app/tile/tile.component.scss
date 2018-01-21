@@ -1,9 +1,38 @@
-div {
-    box-shadow: 3px 3px #888888;
-    border: 1px solid #aaebf0;
+div > div {
+    box-shadow: 2px 2px #888888;
+    border: 1px solid #d0f2f5;
     background-color: hsl(184, 78%, 87%);
-    font-size: 10px;
-    width: 80%;
+    border-radius: 2px;
+    font-size: 7px;
+    width: 98%;
     height: 80%;
-    margin: 2px;
+    text-align: left;
+    // margin-right: 2px;
+    h6 {
+        margin: 1px 0px 1px 1px;
+    }
+    p {
+        margin: 1px 0px 1px 1px;
+    }
+    .name {
+        font-size: 9px;
+    }
+    .type {
+        font-size: 8px;
+        float: right;
+    }
+    div {
+        box-shadow: 0 0 ;
+        .tag {
+            background-color:#eef7f8;
+            font-size: 8px;
+            border-radius: 2px;
+            padding: 1px;
+            margin: 1px;
+            // white-space:wrap;
+        }
+    }
+       
+    
+  
 }

@@ -76,3 +76,8 @@ deleteReservation = function(id, cb){
 
 module.exports.deleteReservation = deleteReservation;
 
+getReservation = function(id, cb){
+    Reservation.findOne({reservation_id: id}, cb);
+}
+
+module.exports.getReservation = getReservation;

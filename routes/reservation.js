@@ -33,4 +33,16 @@ router.delete('/delete_reservation/:id', (req, res) => {
     });
 });
 
+
+router.get('/get_reservation/:id', (req, res) => {
+    Reservation.getReservation(req.params.id, (err, reservation) => {
+        if(err){
+            res.json({success:false, message: `Failed to get Reservation. Error: ${err}`});
+        }
+        else {
+            res.json({success:true, message: "Fetched successfully", reservation: reservation});
+        }
+    });
+});
+
 module.exports = router;
