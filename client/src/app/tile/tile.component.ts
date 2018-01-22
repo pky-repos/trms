@@ -37,7 +37,7 @@ export class TileComponent implements OnInit {
   }
 
   populateTile(id) {
-    this.httpCient.get('http://localhost:3000/api/reservation/get_reservation/' + id).subscribe(data => {
+    this.httpCient.get('api/reservation/get_reservation/' + id).subscribe(data => {
       this.tile_data = data['reservation'] as Reservation;
     });
   }

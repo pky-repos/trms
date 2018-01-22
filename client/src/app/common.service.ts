@@ -39,45 +39,40 @@ export class CommonService {
   }
 
   fillTable() {
-    
-      console.log('inside fillTable');
-      this.tr = [];
-      this.httpCient.get('http://localhost:3000/api/table/get_tables').subscribe(data => {
-        this.tables = data['tables'];
-        console.log('tables - ', this.tables);
 
-        data['tables'].forEach(table => {
-          this.httpCient.get('http://localhost:3000/api/table/get_table_reservations/' + table['id'] +
-           '/' + this.currentDate)
-            .subscribe(tableReservation => {
+    console.log('inside fillTable');
+    this.tr = [];
+    this.httpCient.get('api/table/get_tables').subscribe(data => {
+      this.tables = data['tables'];
 
-              this.tr.push({
-                tableId: table['id'],
-                slot: Array(this.closing - this.opening).fill({}).map((val, index) => (
-                  {
-                    'start': this.opening + index,
-                    'end': this.opening + index + 1,
-                    'reservation_id': 0
+      data['tables'].forEach(table => {
+        this.httpCient.get('api/table/get_table_reservations/' + table['id'] +
+          '/' + this.currentDate)
+          .subscribe(tableReservation => {
+
+            this.tr.push({
+              tableId: table['id'],
+              slot: Array(this.closing - this.opening).fill({}).map((val, index) => (
+                {
+                  'start': this.opening + index,
+                  'end': this.opening + index + 1,
+                  'reservation_id': 0
+                }
+              )).map(slot => {
+
+                tableReservation['reservations'].forEach(reservation => {
+                  if (reservation['attributes']['slot_start'] == slot['start']) {
+                    slot['reservation_id'] = reservation['reservation_id'];
                   }
-                )).map(slot => {
+                });
 
-                  tableReservation['reservations'].forEach(reservation => {
-                    if (reservation['attributes']['slot_start'] == slot['start']) {
-                      slot['reservation_id'] = reservation['reservation_id'];
-                    }
-                  });
-
-                  return slot['reservation_id'];
-                })
-              });
-            },
-            err => console.log(err));
-        });
-        console.log('tables - ', this.tables);
-        this.gridSubject.next({'tables': this.tables, 'tablesReservation':this.tr });
-      
+                return slot['reservation_id'];
+              })
+            });
+          },
+          err => console.log(err));
       });
-
-   
+      this.gridSubject.next({ 'tables': this.tables, 'tablesReservation': this.tr });
+    });
   }
 }

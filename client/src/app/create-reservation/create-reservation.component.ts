@@ -4,7 +4,7 @@ import { DatePipe } from '@angular/common';
 import { FormControl, ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 
 import { Table } from '../models/Table';
-import { Reservation, Attributes, ContactDetails, Tag } from '../models/Reservation';
+import { Reservation, Attributes, ContactDetails} from '../models/Reservation';
 
 import { CommonService } from '../common.service';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
@@ -60,7 +60,7 @@ export class CreateReservationComponent implements OnInit {
 
     this.statuses = ['Arrived', 'Seated', 'Finished', 'Cancel', 'No-Show'];
 
-    this.httpCient.get('http://localhost:3000/api/table/get_tables').subscribe(data => {
+    this.httpCient.get('api/table/get_tables').subscribe(data => {
       this.tableList = data['tables'].map(table => (table['id']));
       console.log(data);
     });
@@ -105,7 +105,7 @@ export class CreateReservationComponent implements OnInit {
 
   onReservationSubmit() {
 
-    this.httpCient.post('http://localhost:3000/api/reservation/add_reservation',
+    this.httpCient.post('api/reservation/add_reservation',
       this.reservationForm.value).subscribe(data => {
       console.log(data);
       this.dialogRef.close(data);
@@ -116,7 +116,7 @@ export class CreateReservationComponent implements OnInit {
   }
 
   update() {
-    this.httpCient.put('http://localhost:3000/api/reservation/update_reservation/' + 
+    this.httpCient.put('api/reservation/update_reservation/' + 
       this.data['data']['reservation_id'], this.reservationForm.value).subscribe(data => {
       console.log(data);
       this.dialogRef.close(data);
@@ -125,7 +125,7 @@ export class CreateReservationComponent implements OnInit {
   }
 
   delete() {
-    this.httpCient.delete('http://localhost:3000/api/reservation/delete_reservation/' + 
+    this.httpCient.delete('api/reservation/delete_reservation/' + 
     this.data['data']['reservation_id']).subscribe(data => {
     console.log(data);
     this.dialogRef.close(data);

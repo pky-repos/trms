@@ -2,10 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { Reservation, Attributes, ContactDetails, Tag } from '../models/Reservation';
+import { Reservation, Attributes, ContactDetails} from '../models/Reservation';
 import { CreateReservationComponent } from '../create-reservation/create-reservation.component';
 
-import { TableSchedule } from '../models/TableSchedule';
 import { Table } from '../models/Table';
 
 import { TileComponent } from '../tile/tile.component';

@@ -25,11 +25,3 @@ export class ContactDetails {
         public email: string
     ){ }
 }
-
-export class Tag {
-    constructor(
-        public name: string,
-        public value: number,
-        public checked: boolean
-    ){ }
-}

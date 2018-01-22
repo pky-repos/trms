@@ -7,7 +7,7 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import {CreateReservationComponent} from '../create-reservation/create-reservation.component';
 
 import {Table} from '../models/Table';
-import {Reservation, Attributes, ContactDetails, Tag} from '../models/Reservation';
+import {Reservation, Attributes, ContactDetails} from '../models/Reservation';
 
 import {CommonService} from '../common.service';
 
@@ -53,7 +53,7 @@ export class HeaderComponent implements OnInit {
     this.showAddTableForm = false;
 
     
-    this.httpCient.get('http://localhost:3000/api/table/get_tables').subscribe(data => {
+    this.httpCient.get('api/table/get_tables').subscribe(data => {
       this.tableList = data['tables'].map(table => (table['id']));
       console.log(data);
     });
@@ -115,7 +115,7 @@ export class HeaderComponent implements OnInit {
   onTableSubmit() {
     if(this.table.section != '' && this.table.capacity != 0){
       
-        this.httpCient.post('http://localhost:3000/api/table/add_table',this.table).subscribe(data=>{
+        this.httpCient.post('api/table/add_table',this.table).subscribe(data=>{
           console.log(data);
         },
         err => console.log(err));
