@@ -213,8 +213,7 @@ let CalenderComponent = class CalenderComponent {
     ngOnInit() {
         this.commonService.getTable().subscribe((data) => {
             this.tables = data['tables'];
-            console.log('display view works', data);
-            this.tablesReservations = data['tablesReservation'];
+            this.tablesReservations = data['tablesReservations'];
         });
         this.opening = 11;
         this.closing = 21;
@@ -328,7 +327,7 @@ let CommonService = class CommonService {
                     });
                 }, err => console.log(err));
             });
-            this.gridSubject.next({ 'tables': this.tables, 'tablesReservation': this.tr });
+            this.gridSubject.next({ 'tables': this.tables, 'tablesReservations': this.tr });
         });
     }
 };
@@ -678,6 +677,7 @@ let HeaderComponent = class HeaderComponent {
             this.table = new __WEBPACK_IMPORTED_MODULE_5__models_Table__["a" /* Table */]('', 0);
             this.hideAddTableForm();
         }
+        this.commonService.fillTable();
     }
     openDialog() {
         let dialogRef = this.dialog.open(__WEBPACK_IMPORTED_MODULE_4__create_reservation_create_reservation_component__["a" /* CreateReservationComponent */], {

@@ -120,9 +120,9 @@ export class HeaderComponent implements OnInit {
         },
         err => console.log(err));
         this.table = new Table('', 0);
-        this.hideAddTableForm();    }
+        this.hideAddTableForm();   
+    }
     this.commonService.fillTable();
-
   }
 
   openDialog(): void {

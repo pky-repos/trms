@@ -34,7 +34,7 @@ export class CommonService {
     return this.currentDateSubject.asObservable();
   }
 
-  getTable() {
+  getTable(): Observable<any> {
     return this.gridSubject.asObservable();
   }
 
@@ -72,7 +72,7 @@ export class CommonService {
           },
           err => console.log(err));
       });
-      this.gridSubject.next({ 'tables': this.tables, 'tablesReservation': this.tr });
+      this.gridSubject.next({ 'tables': this.tables, 'tablesReservations': this.tr });
     });
   }
 }

@@ -42,8 +42,7 @@ export class CalenderComponent implements OnInit {
 
     this.commonService.getTable().subscribe((data) => {
       this.tables = data['tables'];
-      console.log('display view works', data);
-      this.tablesReservations = data['tablesReservation'];
+      this.tablesReservations = data['tablesReservations'];
     });
 
     this.opening = 11;
