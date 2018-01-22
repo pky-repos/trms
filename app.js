@@ -25,6 +25,6 @@ app.get('/', (req, res, err) =>{
 app.use('/api/table', table);
 app.use('/api/reservation', reservation);
 
-app.listen(process.env.port || 3000, () => {
+app.listen(process.env.PORT || 3000, () => {
     console.log('Express listening for requests..');
 });
