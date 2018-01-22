@@ -32,6 +32,7 @@ export class CreateReservationComponent implements OnInit {
   tableList: number;
 
   reservationForm: FormGroup;
+  from: string;
 
   constructor(private httpCient: HttpClient, private datepipe: DatePipe,
     private commonService: CommonService, public dialogRef: MatDialogRef<CreateReservationComponent>,
@@ -67,7 +68,7 @@ export class CreateReservationComponent implements OnInit {
     console.log(this.data);
 
     if (Object.keys(this.data).length != 0) {
-      this.reservation = this.data;
+      this.reservation = this.data['data'];
       console.log('data from tile', this.reservation.attributes);
     }
 
@@ -97,21 +98,38 @@ export class CreateReservationComponent implements OnInit {
   }
 
   hideCreateReservationForm() {
+
     this.dialogRef.close();
     // document.getElementById("createReservationForm").style.display = 'none';
   }
 
   onReservationSubmit() {
-    let reservationFormData = this.reservationForm.value;
 
-    console.log('RFD - ', reservationFormData);
-
-    this.httpCient.post('http://localhost:3000/api/reservation/add_reservation', reservationFormData).subscribe(data => {
+    this.httpCient.post('http://localhost:3000/api/reservation/add_reservation',
+      this.reservationForm.value).subscribe(data => {
       console.log(data);
       this.dialogRef.close(data);
     },
       err => console.log(err));
     this.reservation = new Reservation('', new Attributes(new Date(0, 0), 0, 0, 0, 0, '',
       new ContactDetails('', ''), [''], ''));
+  }
+
+  update() {
+    this.httpCient.put('http://localhost:3000/api/reservation/update_reservation/' + 
+      this.data['data']['reservation_id'], this.reservationForm.value).subscribe(data => {
+      console.log(data);
+      this.dialogRef.close(data);
+    },
+      err => console.log(err));
+  }
+
+  delete() {
+    this.httpCient.delete('http://localhost:3000/api/reservation/delete_reservation/' + 
+    this.data['data']['reservation_id']).subscribe(data => {
+    console.log(data);
+    this.dialogRef.close(data);
+  },
+    err => console.log(err));
   }
 }

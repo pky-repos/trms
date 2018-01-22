@@ -6,6 +6,8 @@ import {Reservation} from '../models/Reservation';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 import {CreateReservationComponent} from '../create-reservation/create-reservation.component';
 
+import {CommonService} from '../common.service';
+
 @Component({
   selector: 'app-tile',
   templateUrl: './tile.component.html',
@@ -20,12 +22,11 @@ export class TileComponent implements OnInit {
 
   tile_data: any;
 
-  // @HostListener('dragenter', ['$event'])
-  // onDragEnter(event) {
-  //   console.log(event);
-  // }
+  private currentDate: string;
 
-  constructor(public dialog: MatDialog, private elementRef: ElementRef, private httpCient: HttpClient) {
+
+  constructor(public dialog: MatDialog, private elementRef: ElementRef, 
+    private httpCient: HttpClient, private commonService: CommonService) {
     // this.elementRef.nativeElement.draggable = true;
    }
 
@@ -37,7 +38,6 @@ export class TileComponent implements OnInit {
 
   populateTile(id) {
     this.httpCient.get('http://localhost:3000/api/reservation/get_reservation/' + id).subscribe(data => {
-      console.log(data['reservation']);
       this.tile_data = data['reservation'] as Reservation;
     });
   }
@@ -46,11 +46,12 @@ export class TileComponent implements OnInit {
     let dialogRef = this.dialog.open(CreateReservationComponent, {
       width: '700px',
       height: '350px',
-      data: this.tile_data
+      data: {"from":"tile", "data": this.tile_data}
     });
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
+      this.commonService.fillTable();
     });
   }
 }

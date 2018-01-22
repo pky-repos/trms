@@ -58,14 +58,14 @@ export class CalenderComponent implements OnInit {
 
     this.commonService.getCurrentDate().subscribe((date) => {
       this.currentDate = date;
-      this.commonService.fillTable(this.currentDate);
+      this.commonService.fillTable();
     });
 
     this.openHours = Array(this.closing - this.opening).
       fill(0).map((x, i) => ((i + this.opening)));
     console.log(this.openHours);
 
-    this.commonService.fillTable(this.currentDate);
+    this.commonService.fillTable();
   }
 
   trackMouse(e, tableId, slot) {
@@ -77,14 +77,15 @@ export class CalenderComponent implements OnInit {
     this.dialogRef = this.dialog.open(CreateReservationComponent, {
       width: '700px',
       height: '350px',
-      data: new Reservation('', new Attributes(new Date(this.currentDate),
-        +this.openHours[slot], +this.openHours[slot + 1], 0, tableId, '',
-        new ContactDetails('', ''), [''], ''))
+      data: {"from":"calender", "data": new Reservation('', new Attributes(new Date(this.currentDate),
+      +this.openHours[slot], +this.openHours[slot + 1], 0, tableId, '',
+      new ContactDetails('', ''), [''], ''))}
+      
     });
 
     this.dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
-      this.commonService.fillTable(this.currentDate);
+      this.commonService.fillTable();
     });
   }
 

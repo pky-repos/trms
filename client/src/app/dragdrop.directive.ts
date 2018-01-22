@@ -8,13 +8,13 @@ export class DragdropDirective {
   constructor(private el: ElementRef) { 
     el.nativeElement.draggable = true;
     
-    console.log('attributes of tile - ', el.nativeElement.attributes)
-    console.log('children of tile - ', el.nativeElement)
+    // console.log('attributes of tile - ', el.nativeElement.attributes)
+    // console.log('children of tile - ', el.nativeElement)
     // el.nativeElement.children foreach(element => {
     //   element.draggable = true;
     // });
-    let div = el.nativeElement.querySelector('div')
-    console.log('div - ',div);
+    // let div = el.nativeElement.querySelector('div')
+    // console.log('div - ',div);
     // this.el.nativeElement.style.position = "absolute";
 
     // this.el.nativeElement.style.top = this.el.nativeElement.offsetTop;

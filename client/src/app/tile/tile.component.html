@@ -1,21 +1,20 @@
 <ng-container *ngIf="tile_data">
-    <div  (click)="openDialog()">
-        <div>
-          <span class="name">
-              {{tile_data.attributes.contact_details.name}}
-
-          </span>
-          <span class="type">
-             {{tile_data.type}}
-          </span>
-          <span>
-            {{tile_data.attributes.guest_mobile_num}}
-          </span>
-          <div>
-          <ng-container *ngFor="let tag of tile_data.attributes.tags;let i=index">
-            <span *ngIf="i<3" class="tag">{{tag}}</span>
-          </ng-container>   
-        </div>
-        </div>
+  <div (click)="openDialog()">
+    <div>
+      <span class="name">
+        {{tile_data.attributes.contact_details.name}}
+      </span>
+      <span class="type">
+        {{tile_data.type}}
+      </span>
+      <span>
+        {{tile_data.attributes.guest_mobile_num}}
+      </span>
+      <div>
+        <ng-container *ngFor="let tag of tile_data.attributes.tags;let i=index">
+          <span *ngIf="i<3" class="tag">{{tag}}</span>
+        </ng-container>
+      </div>
+    </div>
   </div>
 </ng-container>

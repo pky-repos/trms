@@ -63,15 +63,15 @@ addReservation = function(reservation, cb){
 module.exports.addReservation = addReservation;
 
 
-editReservation = function(id, reservation, cb){
-    Reservation.update({name: reservation.name}, reservation, cb);
+updateReservation = function(id, reservation, cb){
+    Reservation.update({reservation_id: id}, reservation, cb);
 }
 
-module.exports.editReservation = editReservation;
+module.exports.updateReservation = updateReservation;
 
 
 deleteReservation = function(id, cb){
-    Reservation.findByIdAndRemove({_id: id}, cb);
+    Reservation.findOneAndRemove({reservation_id: id}, cb);
 }
 
 module.exports.deleteReservation = deleteReservation;

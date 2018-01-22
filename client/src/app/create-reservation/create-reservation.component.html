@@ -1,82 +1,87 @@
 <div class="reservation" *ngIf="reservationForm">
     <form (ngSubmit)="onReservationSubmit()" [formGroup]="reservationForm">
-        
+
+        <mat-form-field>
+            <mat-select placeholder="Type" formControlName="type">
+                <!-- <mat-option>None</mat-option> -->
+                <mat-option *ngFor="let type of reservationTypes" [value]="type">{{type}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <div formGroupName="attributes">
             <mat-form-field>
-                <mat-select placeholder="Type" formControlName="type">
+                <input matInput [matDatepicker]="picker" placeholder="Choose a date" formControlName="date_time">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-select placeholder="Slot Start" formControlName="slot_start">
                     <!-- <mat-option>None</mat-option> -->
-                    <mat-option *ngFor="let type of reservationTypes" [value]="type">{{type}}</mat-option>
+                    <mat-option *ngFor="let openHour of openHours" [value]="openHour.value">{{openHour.display}}</mat-option>
                 </mat-select>
             </mat-form-field>
 
-            <div formGroupName="attributes">
-                <mat-form-field>
-                    <input matInput [matDatepicker]="picker" placeholder="Choose a date" formControlName="date_time">
-                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
-                </mat-form-field>
+            <mat-form-field>
+                <mat-select placeholder="Slot End" formControlName="slot_end">
+                    <!-- <mat-option>None</mat-option> -->
+                    <mat-option *ngFor="let openHour of openHours" [value]="openHour.value">{{openHour.display}}</mat-option>
+                </mat-select>
+            </mat-form-field>
 
-                <mat-form-field>
-                    <mat-select placeholder="Slot Start" formControlName="slot_start">
-                        <!-- <mat-option>None</mat-option> -->
-                        <mat-option *ngFor="let openHour of openHours" [value]="openHour.value">{{openHour.display}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <mat-form-field>
-                    <mat-select placeholder="Slot End" formControlName="slot_end">
-                        <!-- <mat-option>None</mat-option> -->
-                        <mat-option *ngFor="let openHour of openHours" [value]="openHour.value">{{openHour.display}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <mat-form-field>
-                    <input matInput type="number" placeholder="Guest Count" formControlName="guest_count">
-                </mat-form-field>
+            <mat-form-field>
+                <input matInput type="number" placeholder="Guest Count" formControlName="guest_count">
+            </mat-form-field>
 
 
-                <mat-form-field>
-                    <mat-select placeholder="Table" formControlName="table_number">
-                        <!-- <mat-option>None</mat-option> -->
-                        <mat-option *ngFor="let table of tableList" [value]="table">{{table}}</mat-option>
-                    </mat-select>
-                </mat-form-field>
+            <mat-form-field>
+                <mat-select placeholder="Table" formControlName="table_number">
+                    <!-- <mat-option>None</mat-option> -->
+                    <mat-option *ngFor="let table of tableList" [value]="table">{{table}}</mat-option>
+                </mat-select>
+            </mat-form-field>
 
-                <mat-form-field>
-                    <input matInput type="text" placeholder="Mobile" formControlName="mobile">
-                </mat-form-field>
-            
-                <div formGroupName="contact_details">
-                    <mat-form-field>
-                        <input matInput type="text" placeholder="Name" formControlName="name">
-                    </mat-form-field>
-                    <mat-form-field>
-                        <input matInput type="text" placeholder="Email" formControlName="email">
-                    </mat-form-field>
-                </div>
+            <mat-form-field>
+                <input matInput type="text" placeholder="Mobile" formControlName="mobile">
+            </mat-form-field>
 
+            <div formGroupName="contact_details">
                 <mat-form-field>
-                    <mat-select placeholder="Tags" formControlName="tags" multiple>
-                        <mat-option *ngFor="let tag of tags" [value]="tag.name">{{tag.name}}</mat-option>
-                    </mat-select>
+                    <input matInput type="text" placeholder="Name" formControlName="name">
                 </mat-form-field>
-            
                 <mat-form-field>
-                    <mat-select placeholder="Status" formControlName="status">
-                        <!-- <mat-option>None</mat-option> -->
-                        <mat-option *ngFor="let status of statuses" [value]="status">{{status}}</mat-option>
-                    </mat-select>
+                    <input matInput type="text" placeholder="Email" formControlName="email">
                 </mat-form-field>
             </div>
-            <div>
-                <span>
-                        <button type="button" class="btn btn-warning" (click)="hideCreateReservationForm()">Cancel</button>
 
-                </span>
-                <span>
-                        <button type="submit" class="btn btn-success" [disabled]="!reservationForm.valid">Submit</button>
-                </span>
-            </div>
-    </form> 
+            <mat-form-field>
+                <mat-select placeholder="Tags" formControlName="tags" multiple>
+                    <mat-option *ngFor="let tag of tags" [value]="tag.name">{{tag.name}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-select placeholder="Status" formControlName="status">
+                    <!-- <mat-option>None</mat-option> -->
+                    <mat-option *ngFor="let status of statuses" [value]="status">{{status}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div>
+            <span>
+                <button type="button" class="btn btn-light" (click)="hideCreateReservationForm()">Cancel</button>
+            </span>
+            <span>
+                <button type="button" class="btn btn-warning" (click)="update()">Update</button>
+            </span>
+            <span>
+                <button type="button" class="btn btn-danger" (click)="delete()">Delete</button>
+            </span>
+            <span>
+                <button type="submit" class="btn btn-success" [disabled]="!reservationForm.valid">Submit</button>
+            </span>
+        </div>
+    </form>
 
 
 </div>

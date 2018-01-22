@@ -119,7 +119,6 @@ export class HeaderComponent implements OnInit {
           console.log(data);
         },
         err => console.log(err));
-        // this.showAddTableForm = !this.showAddTableForm;
         this.table = new Table('', 0);
         this.hideAddTableForm();    }
   }
@@ -128,12 +127,12 @@ export class HeaderComponent implements OnInit {
     let dialogRef = this.dialog.open(CreateReservationComponent, {
       width: '700px',
       height: '350px',
-      data: new Reservation('', new Attributes(new Date(this.currentDate), 0, 0, 0, 0, '', 
-              new ContactDetails('', ''), [''], ''))
+      data: {"from": "header", "data": new Reservation('', new Attributes(new Date(this.currentDate), 0, 0, 0, 0, '', 
+              new ContactDetails('', ''), [''], ''))}
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.commonService.fillTable(this.currentDate);
+      this.commonService.fillTable();
 
       console.log('The dialog was closed');
     });

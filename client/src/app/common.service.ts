@@ -15,6 +15,8 @@ export class CommonService {
   openHours: any;
   tables: any;
 
+  currentDate: string;
+
   constructor(private httpCient: HttpClient) {
     this.opening = 11;
     this.closing = 21;
@@ -24,6 +26,7 @@ export class CommonService {
   }
 
   setCurrentDate(date: string) {
+    this.currentDate = date;
     this.currentDateSubject.next(date);
   }
 
@@ -35,7 +38,7 @@ export class CommonService {
     return this.gridSubject.asObservable();
   }
 
-  fillTable(date: string) {
+  fillTable() {
     
       console.log('inside fillTable');
       this.tr = [];
@@ -45,7 +48,7 @@ export class CommonService {
 
         data['tables'].forEach(table => {
           this.httpCient.get('http://localhost:3000/api/table/get_table_reservations/' + table['id'] +
-           '/' + date)
+           '/' + this.currentDate)
             .subscribe(tableReservation => {
 
               this.tr.push({

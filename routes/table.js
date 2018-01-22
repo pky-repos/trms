@@ -7,19 +7,19 @@ router.post('/add_table', (req, res) => {
     let table = req.body;
     Table.addTable(table, function(err, table){
         if(err){
-            res.json({success:false, message: `Failed to add the table. Error: ${err}`});
+            res.json({success:false, message: `Failed to add table. Error: ${err}`});
         } else{
             res.json({success:true, message: "added successfully"});
         }
     });
 });
 
-router.put('/edit_table/:id', (req, res) => {
+router.put('/update_table/:id', (req, res) => {
     let id = req.params.id;
     let table = req.body;
     Table.editTable(id, table, function(err, table){
         if(err){
-            res.json({success:false, message: `Failed to update the table. Error: ${err}`});
+            res.json({success:false, message: `Failed to update table. Error: ${err}`});
         } else {
             res.json({success:true, message: "updated successfully"});
         }
@@ -29,7 +29,7 @@ router.put('/edit_table/:id', (req, res) => {
 router.delete('/delete_table/:id', (req, res) => {
     Table.deleteTable(req.params.id, (err, table) => {
         if(err){
-            res.json({success:false, message: `Failed to delete the table. Error: ${err}`});
+            res.json({success:false, message: `Failed to delete table. Error: ${err}`});
         } else {
             res.json({success:true, message: "Deleted successfully"});
         }
@@ -39,7 +39,7 @@ router.delete('/delete_table/:id', (req, res) => {
 router.get('/get_tables', (req, res) => {
     Table.getTables((err, tables) => {
         if(err){
-            res.json({success:false, message: `Failed to get the tables. Error: ${err}`});
+            res.json({success:false, message: `Failed to get tables. Error: ${err}`});
         } else {
             res.json({success:true, message: "Fetched successfully", tables: tables});
         }
@@ -49,7 +49,7 @@ router.get('/get_tables', (req, res) => {
 router.get('/get_table_reservations/:id/:date', (req, res) => {
     Table.getTableReservations(req.params.id, req.params.date, (err, reservations) => {
         if(err){
-            res.json({success:false, message: `Failed to get the table Reservations. Error: ${err}`});
+            res.json({success:false, message: `Failed to get table Reservations. Error: ${err}`});
         }
         else {
             res.json({success:true, message: "Fetched successfully", reservations: reservations});
