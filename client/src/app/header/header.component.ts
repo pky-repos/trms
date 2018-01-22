@@ -117,12 +117,13 @@ export class HeaderComponent implements OnInit {
       
         this.httpCient.post('api/table/add_table',this.table).subscribe(data=>{
           console.log(data);
+          this.commonService.fillTable();
         },
         err => console.log(err));
         this.table = new Table('', 0);
         this.hideAddTableForm();   
     }
-    this.commonService.fillTable();
+    
   }
 
   openDialog(): void {

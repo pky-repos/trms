@@ -214,6 +214,11 @@ let CalenderComponent = class CalenderComponent {
         this.commonService.getTable().subscribe((data) => {
             this.tables = data['tables'];
             this.tablesReservations = data['tablesReservations'];
+            // this.tablesReservations.sort(function(a,b){
+            //   return a.tableId - b.tableId;
+            //  });
+            console.log('data from service - ', data);
+            // console.log('sort in calender', this.tablesReservations);
         });
         this.opening = 11;
         this.closing = 21;
@@ -306,7 +311,9 @@ let CommonService = class CommonService {
         this.tr = [];
         this.httpCient.get('api/table/get_tables').subscribe(data => {
             this.tables = data['tables'];
+            //console.log('service', this.tables);
             data['tables'].forEach(table => {
+                // console.log('forEach order', table['id']);
                 this.httpCient.get('api/table/get_table_reservations/' + table['id'] +
                     '/' + this.currentDate)
                     .subscribe(tableReservation => {
@@ -327,7 +334,14 @@ let CommonService = class CommonService {
                     });
                 }, err => console.log(err));
             });
-            this.gridSubject.next({ 'tables': this.tables, 'tablesReservations': this.tr });
+            console.log('service - tablesreservations - ', this.tr);
+            let str = this.tr.sort(function (a, b) {
+                return a.tableId - b.tableId;
+            });
+            console.log('service - tablesreservations - sorted', str);
+            this.gridSubject.next({ 'tables': this.tables.sort(),
+                'tablesReservations': str
+            });
         });
     }
 };
@@ -673,11 +687,11 @@ let HeaderComponent = class HeaderComponent {
         if (this.table.section != '' && this.table.capacity != 0) {
             this.httpCient.post('api/table/add_table', this.table).subscribe(data => {
                 console.log(data);
+                this.commonService.fillTable();
             }, err => console.log(err));
             this.table = new __WEBPACK_IMPORTED_MODULE_5__models_Table__["a" /* Table */]('', 0);
             this.hideAddTableForm();
         }
-        this.commonService.fillTable();
     }
     openDialog() {
         let dialogRef = this.dialog.open(__WEBPACK_IMPORTED_MODULE_4__create_reservation_create_reservation_component__["a" /* CreateReservationComponent */], {

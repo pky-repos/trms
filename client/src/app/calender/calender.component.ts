@@ -43,6 +43,13 @@ export class CalenderComponent implements OnInit {
     this.commonService.getTable().subscribe((data) => {
       this.tables = data['tables'];
       this.tablesReservations = data['tablesReservations'];
+
+      // this.tablesReservations.sort(function(a,b){
+      //   return a.tableId - b.tableId;
+      //  });
+
+      console.log('data from service - ', data);
+      // console.log('sort in calender', this.tablesReservations);
     });
 
     this.opening = 11;

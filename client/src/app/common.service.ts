@@ -44,8 +44,10 @@ export class CommonService {
     this.tr = [];
     this.httpCient.get('api/table/get_tables').subscribe(data => {
       this.tables = data['tables'];
+      //console.log('service', this.tables);
 
       data['tables'].forEach(table => {
+        // console.log('forEach order', table['id']);
         this.httpCient.get('api/table/get_table_reservations/' + table['id'] +
           '/' + this.currentDate)
           .subscribe(tableReservation => {
@@ -72,7 +74,15 @@ export class CommonService {
           },
           err => console.log(err));
       });
-      this.gridSubject.next({ 'tables': this.tables, 'tablesReservations': this.tr });
+      console.log('service - tablesreservations - ', this.tr);
+      let str = this.tr.sort(function(a,b){
+        return a.tableId - b.tableId;   
+       });
+       console.log('service - tablesreservations - sorted', str);
+       
+      this.gridSubject.next({ 'tables': this.tables.sort(),
+       'tablesReservations': str
+      });
     });
   }
 }
