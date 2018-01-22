@@ -8,7 +8,7 @@ const reservation = require('./routes/reservation');
 
 const app = express();
 
-mongoose.connect('mongodb://pky1139:crazysexy1@ds111608.mlab.com:11608/trms');
+mongoose.connect('mongodb://panky.asg@gmail.com:crazysexy1@ds111608.mlab.com:11608/trms');
 mongoose.Promise = global.Promise;
 
 app.use(express.static(path.join(__dirname, 'client', 'dist')));
