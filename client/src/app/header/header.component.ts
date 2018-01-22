@@ -133,6 +133,8 @@ export class HeaderComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
+      this.commonService.fillTable(this.currentDate);
+
       console.log('The dialog was closed');
     });
   }

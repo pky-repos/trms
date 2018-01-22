@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
-import {Reservation, Attributes, ContactDetails, Tag} from '../models/Reservation';
-import {CreateReservationComponent} from '../create-reservation/create-reservation.component';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { Reservation, Attributes, ContactDetails, Tag } from '../models/Reservation';
+import { CreateReservationComponent } from '../create-reservation/create-reservation.component';
 
-import {TableSchedule} from '../models/TableSchedule';
-import {Table} from '../models/Table';
+import { TableSchedule } from '../models/TableSchedule';
+import { Table } from '../models/Table';
 
-import {TileComponent} from '../tile/tile.component';
+import { TileComponent } from '../tile/tile.component';
 
-import {DragdropDirective} from '../dragdrop.directive';
+import { DragdropDirective } from '../dragdrop.directive';
 
-import {CommonService} from '../common.service';
+import { CommonService } from '../common.service';
 import { Observable } from 'rxjs/Observable';
 
 @Component({
@@ -36,87 +36,41 @@ export class CalenderComponent implements OnInit {
 
   dialogRef: any;
 
-  constructor(private httpCient: HttpClient, private datepipe: DatePipe, 
+  constructor(private httpCient: HttpClient, private datepipe: DatePipe,
     private commonService: CommonService, public dialog: MatDialog) { }
 
   ngOnInit() {
 
+    this.commonService.getTable().subscribe((data) => {
+      this.tables = data['tables'];
+      console.log('display view works', data);
+      this.tablesReservations = data['tablesReservation'];
+    });
+
     this.opening = 11;
     this.closing = 21;
 
-    this.openHours = Array(this.closing - this.opening).
-      fill(0).map((x, i)=> ((i + this.opening).toString() + ':00'));
 
+    this.openHours = Array(this.closing - this.opening).
+      fill(0).map((x, i) => ((i + this.opening).toString() + ':00'));
 
     this.currentDate = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
 
     this.commonService.getCurrentDate().subscribe((date) => {
       this.currentDate = date;
-      this.fillTable();
-    })
-
-    this.opening = 11;
-    this.closing = 21;
+      this.commonService.fillTable(this.currentDate);
+    });
 
     this.openHours = Array(this.closing - this.opening).
-      fill(0).map((x, i)=> ((i + this.opening)));
+      fill(0).map((x, i) => ((i + this.opening)));
     console.log(this.openHours);
-    
-    this.fillTable();
+
+    this.commonService.fillTable(this.currentDate);
   }
 
-  fillTable() {
-  {
-
-   console.log('inside fillTable');
-   this.tablesReservations = [];
-    this.httpCient.get('http://localhost:3000/api/table/get_tables').subscribe(data => {
-      this.tables = data['tables'];
-
-      this.tables.forEach(table => {
-        this.httpCient.get('http://localhost:3000/api/table/get_table_reservations/' + table['id'] + '/' + this.currentDate)
-        .subscribe(tableReservation => {
-         
-          this.tablesReservations.push({
-            tableId: table['id'],
-            slot: Array(this.closing - this.opening).fill({}).map((val, index)=>(
-              {
-                'start': this.opening + index,
-                'end': this.opening + index + 1,
-                'reservation_id': 0
-              }
-            )).map(slot => {
-              
-              //console.log('before - ',table['id'], slot['start'], slot['reservation_id']);
-
-              tableReservation['reservations'].forEach(reservation => {
-                if (reservation['attributes']['slot_start'] == slot['start']) {
-                  slot['reservation_id'] = reservation['reservation_id'];
-                }
-              });
-              
-              //console.log('after- - ',table['id'], slot['start'], slot['reservation_id']);
-
-              return slot['reservation_id'];
-            })
-          });
-          //console.log(this.tablesReservations);
-        },
-        err => console.log(err) );
-      });
-    });
-    
-    console.log('Reservations - ', this.tablesReservations);
-    
-  }
-  }
-
-  trackMouse(e, tableId, slot){
+  trackMouse(e, tableId, slot) {
     console.log('calender - mouse X = ', e.clientX, ' Y = ', e.clientY, tableId, slot);
-    // this.showForm = !this.showForm;
-   
     this.openDialog(tableId, slot);
-
   }
 
   openDialog(tableId, slot): void {
@@ -124,23 +78,14 @@ export class CalenderComponent implements OnInit {
       width: '700px',
       height: '350px',
       data: new Reservation('', new Attributes(new Date(this.currentDate),
-      +this.openHours[slot], +this.openHours[slot + 1], 0, tableId, '', 
-      new ContactDetails('', ''), [''], ''))
+        +this.openHours[slot], +this.openHours[slot + 1], 0, tableId, '',
+        new ContactDetails('', ''), [''], ''))
     });
-    // {currentDate: this.currentDate, tableId: tableId, slot: slot}
+
     this.dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
-      this.fillTable();
+      this.commonService.fillTable(this.currentDate);
     });
-  }
-
-  onClick(e){
-    console.log('tile is clicked - ',e);
-  }
-
-
-  onDragEnter(e){
-    console.log('tile is dragged - ',e);
   }
 
 }
