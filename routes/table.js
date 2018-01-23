@@ -46,6 +46,16 @@ router.get('/get_tables', (req, res) => {
     });
 });
 
+router.get('/get_table/:id', (req, res) => {
+    Table.getTable(req.params.id, (err, table) => {
+        if(err){
+            res.json({success:false, message: `Failed to get tables. Error: ${err}`});
+        } else {
+            res.json({success:true, message: "Fetched successfully", table: table});
+        }
+    });
+});
+
 router.get('/get_table_reservations/:id/:date', (req, res) => {
     Table.getTableReservations(req.params.id, req.params.date, (err, reservations) => {
         if(err){

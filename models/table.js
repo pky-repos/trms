@@ -44,10 +44,18 @@ deleteTable = function(id, cb){
 module.exports.deleteTable = deleteTable;
 
 getTables = function(cb){
-    Table.find({},null, { sort: {'id': 1}}, cb);
+    Table.find({}, null, { sort: {'id': 1}}, cb);
 }
 
 module.exports.getTables = getTables;
+
+
+getTable = function(id, cb){
+    Table.find({id: id}, cb);
+}
+
+module.exports.getTable = getTable;
+
 
 getTableReservations = function(id, date, cb){
     console.log('date', date);

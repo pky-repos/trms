@@ -29,8 +29,12 @@
                 </mat-select>
             </mat-form-field>
 
+
             <mat-form-field>
-                <input matInput type="number" placeholder="Guest Count" formControlName="guest_count">
+                <mat-select placeholder="Guest Count" formControlName="guest_count">
+                    <!-- <mat-option>None</mat-option> -->
+                    <mat-option *ngFor="let guest of guestCountList" [value]="guest">{{guest}}</mat-option>
+                </mat-select>
             </mat-form-field>
 
 
@@ -50,7 +54,7 @@
                     <input matInput type="text" placeholder="Name" formControlName="name">
                 </mat-form-field>
                 <mat-form-field>
-                    <input matInput type="text" placeholder="Email" formControlName="email">
+                    <input matInput type="email" placeholder="Email" formControlName="email">
                 </mat-form-field>
             </div>
 

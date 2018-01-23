@@ -48,12 +48,11 @@ export class CommonService {
 
       data['tables'].forEach(table => {
         // console.log('forEach order', table['id']);
-        this.httpCient.get('api/table/get_table_reservations/' + table['id'] +
-          '/' + this.currentDate)
+        this.httpCient.get('api/table/get_table_reservations/' + table['id'] +'/' + this.currentDate)
           .subscribe(tableReservation => {
 
             this.tr.push({
-              tableId: table['id'],
+              tableId: +table['id'],
               slot: Array(this.closing - this.opening).fill({}).map((val, index) => (
                 {
                   'start': this.opening + index,
@@ -71,18 +70,27 @@ export class CommonService {
                 return slot['reservation_id'];
               })
             });
+            console.log('service - tablesreservations - ', this.tr);
+            this.tr.forEach(a => {
+              console.log('array style-', this['tableId']);
+              console.log('object style-', this.tr.tableId);
+            });
+
+
+            let sortFn = function (a, b) {
+              return a.tableId - b.tableId;
+            }
+            this.tr.sort(sortFn);
+            console.log('service - tablesreservations - sorted', this.tr);
+
+            this.gridSubject.next({
+              'tables': this.tables.sort(),
+              'tablesReservations': this.tr
+            });
           },
           err => console.log(err));
       });
-      console.log('service - tablesreservations - ', this.tr);
-      let str = this.tr.sort(function(a,b){
-        return a.tableId - b.tableId;   
-       });
-       console.log('service - tablesreservations - sorted', str);
-       
-      this.gridSubject.next({ 'tables': this.tables.sort(),
-       'tablesReservations': str
-      });
+
     });
   }
 }

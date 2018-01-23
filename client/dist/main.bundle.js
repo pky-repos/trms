@@ -314,11 +314,10 @@ let CommonService = class CommonService {
             //console.log('service', this.tables);
             data['tables'].forEach(table => {
                 // console.log('forEach order', table['id']);
-                this.httpCient.get('api/table/get_table_reservations/' + table['id'] +
-                    '/' + this.currentDate)
+                this.httpCient.get('api/table/get_table_reservations/' + table['id'] + '/' + this.currentDate)
                     .subscribe(tableReservation => {
                     this.tr.push({
-                        tableId: table['id'],
+                        tableId: +table['id'],
                         slot: Array(this.closing - this.opening).fill({}).map((val, index) => ({
                             'start': this.opening + index,
                             'end': this.opening + index + 1,
@@ -332,15 +331,21 @@ let CommonService = class CommonService {
                             return slot['reservation_id'];
                         })
                     });
+                    console.log('service - tablesreservations - ', this.tr);
+                    this.tr.forEach(a => {
+                        console.log('array style-', this['tableId']);
+                        console.log('object style-', this.tr.tableId);
+                    });
+                    let sortFn = function (a, b) {
+                        return a.tableId - b.tableId;
+                    };
+                    this.tr.sort(sortFn);
+                    console.log('service - tablesreservations - sorted', this.tr);
+                    this.gridSubject.next({
+                        'tables': this.tables.sort(),
+                        'tablesReservations': this.tr
+                    });
                 }, err => console.log(err));
-            });
-            console.log('service - tablesreservations - ', this.tr);
-            let str = this.tr.sort(function (a, b) {
-                return a.tableId - b.tableId;
-            });
-            console.log('service - tablesreservations - sorted', str);
-            this.gridSubject.next({ 'tables': this.tables.sort(),
-                'tablesReservations': str
             });
         });
     }
@@ -357,7 +362,7 @@ CommonService = __decorate([
 /***/ "../../../../../src/app/create-reservation/create-reservation.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"reservation\" *ngIf=\"reservationForm\">\r\n    <form (ngSubmit)=\"onReservationSubmit()\" [formGroup]=\"reservationForm\">\r\n\r\n        <mat-form-field>\r\n            <mat-select placeholder=\"Type\" formControlName=\"type\">\r\n                <!-- <mat-option>None</mat-option> -->\r\n                <mat-option *ngFor=\"let type of reservationTypes\" [value]=\"type\">{{type}}</mat-option>\r\n            </mat-select>\r\n        </mat-form-field>\r\n\r\n        <div formGroupName=\"attributes\">\r\n            <mat-form-field>\r\n                <input matInput [matDatepicker]=\"picker\" placeholder=\"Choose a date\" formControlName=\"date_time\">\r\n                <mat-datepicker-toggle matSuffix [for]=\"picker\"></mat-datepicker-toggle>\r\n                <mat-datepicker #picker></mat-datepicker>\r\n            </mat-form-field>\r\n\r\n            <mat-form-field>\r\n                <mat-select placeholder=\"Slot Start\" formControlName=\"slot_start\">\r\n                    <!-- <mat-option>None</mat-option> -->\r\n                    <mat-option *ngFor=\"let openHour of openHours\" [value]=\"openHour.value\">{{openHour.display}}</mat-option>\r\n                </mat-select>\r\n            </mat-form-field>\r\n\r\n            <mat-form-field>\r\n                <mat-select placeholder=\"Slot End\" formControlName=\"slot_end\">\r\n                    <!-- <mat-option>None</mat-option> -->\r\n                    <mat-option *ngFor=\"let openHour of openHours\" [value]=\"openHour.value\">{{openHour.display}}</mat-option>\r\n                </mat-select>\r\n            </mat-form-field>\r\n\r\n            <mat-form-field>\r\n                <input matInput type=\"number\" placeholder=\"Guest Count\" formControlName=\"guest_count\">\r\n            </mat-form-field>\r\n\r\n\r\n            <mat-form-field>\r\n                <mat-select placeholder=\"Table\" formControlName=\"table_number\">\r\n                    <!-- <mat-option>None</mat-option> -->\r\n                    <mat-option *ngFor=\"let table of tableList\" [value]=\"table\">{{table}}</mat-option>\r\n                </mat-select>\r\n            </mat-form-field>\r\n\r\n            <mat-form-field>\r\n                <input matInput type=\"text\" placeholder=\"Mobile\" formControlName=\"mobile\">\r\n            </mat-form-field>\r\n\r\n            <div formGroupName=\"contact_details\">\r\n                <mat-form-field>\r\n                    <input matInput type=\"text\" placeholder=\"Name\" formControlName=\"name\">\r\n                </mat-form-field>\r\n                <mat-form-field>\r\n                    <input matInput type=\"text\" placeholder=\"Email\" formControlName=\"email\">\r\n                </mat-form-field>\r\n            </div>\r\n\r\n            <mat-form-field>\r\n                <mat-select placeholder=\"Tags\" formControlName=\"tags\" multiple>\r\n                    <mat-option *ngFor=\"let tag of tags\" [value]=\"tag.name\">{{tag.name}}</mat-option>\r\n                </mat-select>\r\n            </mat-form-field>\r\n\r\n            <mat-form-field>\r\n                <mat-select placeholder=\"Status\" formControlName=\"status\">\r\n                    <!-- <mat-option>None</mat-option> -->\r\n                    <mat-option *ngFor=\"let status of statuses\" [value]=\"status\">{{status}}</mat-option>\r\n                </mat-select>\r\n            </mat-form-field>\r\n        </div>\r\n        <div>\r\n            <span>\r\n                <button type=\"button\" class=\"btn btn-light\" (click)=\"hideCreateReservationForm()\">Cancel</button>\r\n            </span>\r\n            <span>\r\n                <button type=\"button\" class=\"btn btn-warning\" (click)=\"update()\">Update</button>\r\n            </span>\r\n            <span>\r\n                <button type=\"button\" class=\"btn btn-danger\" (click)=\"delete()\">Delete</button>\r\n            </span>\r\n            <span>\r\n                <button type=\"submit\" class=\"btn btn-success\" [disabled]=\"!reservationForm.valid\">Submit</button>\r\n            </span>\r\n        </div>\r\n    </form>\r\n\r\n\r\n</div>"
+module.exports = "<div class=\"reservation\" *ngIf=\"reservationForm\">\r\n    <form (ngSubmit)=\"onReservationSubmit()\" [formGroup]=\"reservationForm\">\r\n\r\n        <mat-form-field>\r\n            <mat-select placeholder=\"Type\" formControlName=\"type\">\r\n                <!-- <mat-option>None</mat-option> -->\r\n                <mat-option *ngFor=\"let type of reservationTypes\" [value]=\"type\">{{type}}</mat-option>\r\n            </mat-select>\r\n        </mat-form-field>\r\n\r\n        <div formGroupName=\"attributes\">\r\n            <mat-form-field>\r\n                <input matInput [matDatepicker]=\"picker\" placeholder=\"Choose a date\" formControlName=\"date_time\">\r\n                <mat-datepicker-toggle matSuffix [for]=\"picker\"></mat-datepicker-toggle>\r\n                <mat-datepicker #picker></mat-datepicker>\r\n            </mat-form-field>\r\n\r\n            <mat-form-field>\r\n                <mat-select placeholder=\"Slot Start\" formControlName=\"slot_start\">\r\n                    <!-- <mat-option>None</mat-option> -->\r\n                    <mat-option *ngFor=\"let openHour of openHours\" [value]=\"openHour.value\">{{openHour.display}}</mat-option>\r\n                </mat-select>\r\n            </mat-form-field>\r\n\r\n            <mat-form-field>\r\n                <mat-select placeholder=\"Slot End\" formControlName=\"slot_end\">\r\n                    <!-- <mat-option>None</mat-option> -->\r\n                    <mat-option *ngFor=\"let openHour of openHours\" [value]=\"openHour.value\">{{openHour.display}}</mat-option>\r\n                </mat-select>\r\n            </mat-form-field>\r\n\r\n\r\n            <mat-form-field>\r\n                <mat-select placeholder=\"Guest Count\" formControlName=\"guest_count\">\r\n                    <!-- <mat-option>None</mat-option> -->\r\n                    <mat-option *ngFor=\"let guest of guestCountList\" [value]=\"guest\">{{guest}}</mat-option>\r\n                </mat-select>\r\n            </mat-form-field>\r\n\r\n\r\n            <mat-form-field>\r\n                <mat-select placeholder=\"Table\" formControlName=\"table_number\">\r\n                    <!-- <mat-option>None</mat-option> -->\r\n                    <mat-option *ngFor=\"let table of tableList\" [value]=\"table\">{{table}}</mat-option>\r\n                </mat-select>\r\n            </mat-form-field>\r\n\r\n            <mat-form-field>\r\n                <input matInput type=\"text\" placeholder=\"Mobile\" formControlName=\"mobile\">\r\n            </mat-form-field>\r\n\r\n            <div formGroupName=\"contact_details\">\r\n                <mat-form-field>\r\n                    <input matInput type=\"text\" placeholder=\"Name\" formControlName=\"name\">\r\n                </mat-form-field>\r\n                <mat-form-field>\r\n                    <input matInput type=\"email\" placeholder=\"Email\" formControlName=\"email\">\r\n                </mat-form-field>\r\n            </div>\r\n\r\n            <mat-form-field>\r\n                <mat-select placeholder=\"Tags\" formControlName=\"tags\" multiple>\r\n                    <mat-option *ngFor=\"let tag of tags\" [value]=\"tag.name\">{{tag.name}}</mat-option>\r\n                </mat-select>\r\n            </mat-form-field>\r\n\r\n            <mat-form-field>\r\n                <mat-select placeholder=\"Status\" formControlName=\"status\">\r\n                    <!-- <mat-option>None</mat-option> -->\r\n                    <mat-option *ngFor=\"let status of statuses\" [value]=\"status\">{{status}}</mat-option>\r\n                </mat-select>\r\n            </mat-form-field>\r\n        </div>\r\n        <div>\r\n            <span>\r\n                <button type=\"button\" class=\"btn btn-light\" (click)=\"hideCreateReservationForm()\">Cancel</button>\r\n            </span>\r\n            <span>\r\n                <button type=\"button\" class=\"btn btn-warning\" (click)=\"update()\">Update</button>\r\n            </span>\r\n            <span>\r\n                <button type=\"button\" class=\"btn btn-danger\" (click)=\"delete()\">Delete</button>\r\n            </span>\r\n            <span>\r\n                <button type=\"submit\" class=\"btn btn-success\" [disabled]=\"!reservationForm.valid\">Submit</button>\r\n            </span>\r\n        </div>\r\n    </form>\r\n\r\n\r\n</div>"
 
 /***/ }),
 
@@ -441,10 +446,19 @@ let CreateReservationComponent = class CreateReservationComponent {
         if (Object.keys(this.data).length != 0) {
             this.reservation = this.data['data'];
             console.log('data from tile', this.reservation.attributes);
+            let tableId = this.data['data']['attributes']['table_number'];
+            this.httpCient.get('api/table/get_table/' + tableId).subscribe(data => {
+                this.table = data['table'][0];
+                this.guestCountList = tableId == 0 ? Array(10).fill(0).map((x, i) => (i + 1)) :
+                    Array(this.table.capacity).fill(0).map((x, i) => (i + 1));
+                this.tableList = tableId == 0 ? this.tableList : [tableId];
+                this.from = this.data['from'];
+                this.createForm();
+            });
         }
-        this.createForm();
     }
     createForm() {
+        console.log('from - ', this.from);
         this.reservationForm = this.fb.group({
             type: [this.reservation.type || '', __WEBPACK_IMPORTED_MODULE_3__angular_forms__["j" /* Validators */].required],
             attributes: this.fb.group({
@@ -460,8 +474,20 @@ let CreateReservationComponent = class CreateReservationComponent {
                 }),
                 tags: [this.reservation.attributes.tags || ''],
                 status: [this.reservation.attributes.status || '']
-            })
+            }, { validator: this.validateReservation() })
         });
+    }
+    validateReservation() {
+        return (group) => {
+            let start = group.controls['slot_start'].value;
+            let end = group.controls['slot_end'].value;
+            const slot_valid = start < end ? true : false;
+            if (!slot_valid)
+                return {
+                    'diff': start - end
+                };
+            return null;
+        };
     }
     hideCreateReservationForm() {
         this.dialogRef.close();
