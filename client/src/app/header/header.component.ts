@@ -4,11 +4,10 @@ import { HttpClient } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
+import {config} from '../config';
 import {CreateReservationComponent} from '../create-reservation/create-reservation.component';
-
 import {Table} from '../models/Table';
 import {Reservation, Attributes, ContactDetails} from '../models/Reservation';
-
 import {CommonService} from '../common.service';
 
 
@@ -18,9 +17,6 @@ import {CommonService} from '../common.service';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-  private opening: number;
-  private closing: number;
-  private openHours: string[];
 
   private currentDate: string;
   private table: Table;
@@ -40,13 +36,6 @@ export class HeaderComponent implements OnInit {
 
     this.commonService.setCurrentDate(this.currentDate);
 
-    this.opening = 11;
-    this.closing = 21;
-
-    this.openHours = Array(this.closing - this.opening).
-      fill(0).map((x, i)=> ((i + this.opening).toString() + ':00'));
-    console.log(this.openHours);
-
     this.table = new Table('', 0);
     this.sections = ['Indoor', 'Outdoor'];
     this.capacities = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -55,7 +44,6 @@ export class HeaderComponent implements OnInit {
     
     this.httpCient.get('api/table/get_tables').subscribe(data => {
       this.tableList = data['tables'].map(table => (table['id']));
-      console.log(data);
     });
   }
 
@@ -76,7 +64,6 @@ export class HeaderComponent implements OnInit {
   today() {
     this.currentDate = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
     this.commonService.setCurrentDate(this.currentDate);
-
   }
 
   next() {
@@ -128,8 +115,8 @@ export class HeaderComponent implements OnInit {
 
   openDialog(): void {
     let dialogRef = this.dialog.open(CreateReservationComponent, {
-      width: '700px',
-      height: '350px',
+      width: config.reservationFormWidth,
+      height: config.reservationFormHeight,
       data: {"from": "header", "data": new Reservation('', new Attributes(new Date(this.currentDate), 0, 0, 0, 0, '', 
               new ContactDetails('', ''), [''], ''))}
     });

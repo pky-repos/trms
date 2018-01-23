@@ -1,11 +1,10 @@
 import { Component, OnInit, Input, HostListener, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
-import {Reservation} from '../models/Reservation';
-
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
-import {CreateReservationComponent} from '../create-reservation/create-reservation.component';
 
+import {config} from '../config';
+import {Reservation} from '../models/Reservation';
+import {CreateReservationComponent} from '../create-reservation/create-reservation.component';
 import {CommonService} from '../common.service';
 
 @Component({
@@ -44,8 +43,8 @@ export class TileComponent implements OnInit {
 
   openDialog(): void {
     let dialogRef = this.dialog.open(CreateReservationComponent, {
-      width: '700px',
-      height: '350px',
+      width: config.reservationFormWidth,
+      height: config.reservationFormHeight,
       data: {"from":"tile", "data": this.tile_data}
     });
 

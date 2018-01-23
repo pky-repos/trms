@@ -148,7 +148,7 @@ AppModule = __decorate([
 /***/ "../../../../../src/app/calender/calender.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div style=\"text-align: center;\" *ngIf=\"tablesReservations\">\r\n  <!-- {{currentDate}} -->\r\n  <table class=\"table table-striped\" style=\"padding:10px;\">\r\n    <tr>\r\n      <td>\r\n        <table class=\"table table-striped\">\r\n          <tr>\r\n            <td></td>\r\n          </tr>\r\n          <ng-container *ngFor=\"let table of tables\">\r\n            <tr>\r\n              <th>{{table.id}}</th>\r\n            </tr>\r\n          </ng-container>\r\n        </table>\r\n      </td>\r\n      <td>\r\n        <table class=\"table table-striped\" id=\"tableReservations\">\r\n          <thead>\r\n            <tr>\r\n              <ng-container *ngFor=\"let hour of openHours\"> \r\n                <th>\r\n                  {{hour}}\r\n                </th>\r\n              </ng-container>\r\n            </tr>\r\n          </thead>\r\n          <tbody >\r\n            <ng-container *ngFor=\"let tablesReservation of tablesReservations\">\r\n              <tr>\r\n                <ng-container *ngFor=\"let reservation of tablesReservation.slot; let i=index\"\r\n                 >\r\n                  <td (click)=\"trackMouse($event, tablesReservation['tableId'], i)\">\r\n                    <ng-container *ngIf=\"reservation != 0\">\r\n                      <!-- {{reservation}} -->\r\n                      <app-tile [reservation_id]=\"reservation\" dragdrop></app-tile>\r\n                      <!-- <div *ngIf=\"showForm\">\r\n                        <app-create-reservation></app-create-reservation>\r\n                      </div> -->\r\n                    </ng-container>\r\n                  </td>\r\n                </ng-container>\r\n              </tr>\r\n            </ng-container>\r\n          </tbody>\r\n        </table>\r\n      </td>\r\n    </tr>\r\n  </table>\r\n</div>"
+module.exports = "<div style=\"text-align: center;\" *ngIf=\"tablesReservations\">\r\n  <!-- {{currentDate}} -->\r\n  <table class=\"table table-striped\" style=\"padding:10px;\">\r\n    <tr>\r\n      <td>\r\n        <table class=\"table table-striped\">\r\n          <tr>\r\n            <td></td>\r\n          </tr>\r\n          <ng-container *ngFor=\"let table of tables\">\r\n            <tr>\r\n              <th>{{table.id}}</th>\r\n            </tr>\r\n          </ng-container>\r\n        </table>\r\n      </td>\r\n      <td>\r\n        <table class=\"table table-striped\" id=\"tableReservations\">\r\n          <thead>\r\n            <tr>\r\n              <ng-container *ngFor=\"let hour of openHoursDisplay\"> \r\n                <th>\r\n                  {{hour}}\r\n                </th>\r\n              </ng-container>\r\n            </tr>\r\n          </thead>\r\n          <tbody >\r\n            <ng-container *ngFor=\"let tablesReservation of tablesReservations\">\r\n              <tr>\r\n                <ng-container *ngFor=\"let reservation of tablesReservation.slot; let i=index\"\r\n                 >\r\n                  <td (click)=\"trackMouse($event, tablesReservation['tableId'], i)\">\r\n                    <ng-container *ngIf=\"reservation != 0\">\r\n                      <!-- {{reservation}} -->\r\n                      <app-tile [reservation_id]=\"reservation\" dragdrop></app-tile>\r\n                      <!-- <div *ngIf=\"showForm\">\r\n                        <app-create-reservation></app-create-reservation>\r\n                      </div> -->\r\n                    </ng-container>\r\n                  </td>\r\n                </ng-container>\r\n              </tr>\r\n            </ng-container>\r\n          </tbody>\r\n        </table>\r\n      </td>\r\n    </tr>\r\n  </table>\r\n</div>"
 
 /***/ }),
 
@@ -179,9 +179,10 @@ module.exports = module.exports.toString();
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_common__ = __webpack_require__("../../../common/esm2015/common.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_common_http__ = __webpack_require__("../../../common/esm2015/http.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_material__ = __webpack_require__("../../../material/esm2015/material.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__models_Reservation__ = __webpack_require__("../../../../../src/app/models/Reservation.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__create_reservation_create_reservation_component__ = __webpack_require__("../../../../../src/app/create-reservation/create-reservation.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__common_service__ = __webpack_require__("../../../../../src/app/common.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config__ = __webpack_require__("../../../../../src/app/config.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__models_Reservation__ = __webpack_require__("../../../../../src/app/models/Reservation.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__create_reservation_create_reservation_component__ = __webpack_require__("../../../../../src/app/create-reservation/create-reservation.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__common_service__ = __webpack_require__("../../../../../src/app/common.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -191,6 +192,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -214,23 +216,17 @@ let CalenderComponent = class CalenderComponent {
         this.commonService.getTable().subscribe((data) => {
             this.tables = data['tables'];
             this.tablesReservations = data['tablesReservations'];
-            // this.tablesReservations.sort(function(a,b){
-            //   return a.tableId - b.tableId;
-            //  });
-            console.log('data from service - ', data);
-            // console.log('sort in calender', this.tablesReservations);
         });
-        this.opening = 11;
-        this.closing = 21;
-        this.openHours = Array(this.closing - this.opening).
-            fill(0).map((x, i) => ((i + this.opening).toString() + ':00'));
+        this.openHoursDisplay = Array(__WEBPACK_IMPORTED_MODULE_4__config__["a" /* config */].closing - __WEBPACK_IMPORTED_MODULE_4__config__["a" /* config */].opening).
+            fill(0).map((x, i) => ((i + __WEBPACK_IMPORTED_MODULE_4__config__["a" /* config */].opening).toString() + ':00'));
+        console.log('openhoursdisplay', this.openHoursDisplay);
         this.currentDate = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
         this.commonService.getCurrentDate().subscribe((date) => {
             this.currentDate = date;
             this.commonService.fillTable();
         });
-        this.openHours = Array(this.closing - this.opening).
-            fill(0).map((x, i) => ((i + this.opening)));
+        this.openHours = Array(__WEBPACK_IMPORTED_MODULE_4__config__["a" /* config */].closing - __WEBPACK_IMPORTED_MODULE_4__config__["a" /* config */].opening).
+            fill(0).map((x, i) => ((i + __WEBPACK_IMPORTED_MODULE_4__config__["a" /* config */].opening)));
         console.log(this.openHours);
         this.commonService.fillTable();
     }
@@ -239,10 +235,10 @@ let CalenderComponent = class CalenderComponent {
         this.openDialog(tableId, slot);
     }
     openDialog(tableId, slot) {
-        this.dialogRef = this.dialog.open(__WEBPACK_IMPORTED_MODULE_5__create_reservation_create_reservation_component__["a" /* CreateReservationComponent */], {
-            width: '700px',
-            height: '350px',
-            data: { "from": "calender", "data": new __WEBPACK_IMPORTED_MODULE_4__models_Reservation__["c" /* Reservation */]('', new __WEBPACK_IMPORTED_MODULE_4__models_Reservation__["a" /* Attributes */](new Date(this.currentDate), +this.openHours[slot], +this.openHours[slot + 1], 0, tableId, '', new __WEBPACK_IMPORTED_MODULE_4__models_Reservation__["b" /* ContactDetails */]('', ''), [''], '')) }
+        this.dialogRef = this.dialog.open(__WEBPACK_IMPORTED_MODULE_6__create_reservation_create_reservation_component__["a" /* CreateReservationComponent */], {
+            width: __WEBPACK_IMPORTED_MODULE_4__config__["a" /* config */].reservationFormWidth,
+            height: __WEBPACK_IMPORTED_MODULE_4__config__["a" /* config */].reservationFormHeight,
+            data: { "from": "calender", "data": new __WEBPACK_IMPORTED_MODULE_5__models_Reservation__["c" /* Reservation */]('', new __WEBPACK_IMPORTED_MODULE_5__models_Reservation__["a" /* Attributes */](new Date(this.currentDate), +this.openHours[slot], +this.openHours[slot + 1], 0, tableId, '', new __WEBPACK_IMPORTED_MODULE_5__models_Reservation__["b" /* ContactDetails */]('', ''), [''], '')) }
         });
         this.dialogRef.afterClosed().subscribe(result => {
             console.log('The dialog was closed');
@@ -257,7 +253,7 @@ CalenderComponent = __decorate([
         styles: [__webpack_require__("../../../../../src/app/calender/calender.component.scss")]
     }),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__angular_common_http__["a" /* HttpClient */], __WEBPACK_IMPORTED_MODULE_1__angular_common__["c" /* DatePipe */],
-        __WEBPACK_IMPORTED_MODULE_6__common_service__["a" /* CommonService */], __WEBPACK_IMPORTED_MODULE_3__angular_material__["c" /* MatDialog */]])
+        __WEBPACK_IMPORTED_MODULE_7__common_service__["a" /* CommonService */], __WEBPACK_IMPORTED_MODULE_3__angular_material__["c" /* MatDialog */]])
 ], CalenderComponent);
 
 
@@ -331,11 +327,6 @@ let CommonService = class CommonService {
                             return slot['reservation_id'];
                         })
                     });
-                    console.log('service - tablesreservations - ', this.tr);
-                    this.tr.forEach(a => {
-                        console.log('array style-', this['tableId']);
-                        console.log('object style-', this.tr.tableId);
-                    });
                     let sortFn = function (a, b) {
                         return a.tableId - b.tableId;
                     };
@@ -354,6 +345,22 @@ CommonService = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["z" /* Injectable */])(),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__angular_common_http__["a" /* HttpClient */]])
 ], CommonService);
+
+
+
+/***/ }),
+
+/***/ "../../../../../src/app/config.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+const config = {
+    opening: 11,
+    closing: 21,
+    reservationFormWidth: '700px',
+    reservationFormHeight: '360px'
+};
+/* harmony export (immutable) */ __webpack_exports__["a"] = config;
 
 
 
@@ -632,10 +639,11 @@ module.exports = module.exports.toString();
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_common_http__ = __webpack_require__("../../../common/esm2015/http.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_common__ = __webpack_require__("../../../common/esm2015/common.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_material__ = __webpack_require__("../../../material/esm2015/material.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__create_reservation_create_reservation_component__ = __webpack_require__("../../../../../src/app/create-reservation/create-reservation.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__models_Table__ = __webpack_require__("../../../../../src/app/models/Table.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__models_Reservation__ = __webpack_require__("../../../../../src/app/models/Reservation.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__common_service__ = __webpack_require__("../../../../../src/app/common.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config__ = __webpack_require__("../../../../../src/app/config.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__create_reservation_create_reservation_component__ = __webpack_require__("../../../../../src/app/create-reservation/create-reservation.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__models_Table__ = __webpack_require__("../../../../../src/app/models/Table.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__models_Reservation__ = __webpack_require__("../../../../../src/app/models/Reservation.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__common_service__ = __webpack_require__("../../../../../src/app/common.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -645,6 +653,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -663,18 +672,12 @@ let HeaderComponent = class HeaderComponent {
     ngOnInit() {
         this.currentDate = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
         this.commonService.setCurrentDate(this.currentDate);
-        this.opening = 11;
-        this.closing = 21;
-        this.openHours = Array(this.closing - this.opening).
-            fill(0).map((x, i) => ((i + this.opening).toString() + ':00'));
-        console.log(this.openHours);
-        this.table = new __WEBPACK_IMPORTED_MODULE_5__models_Table__["a" /* Table */]('', 0);
+        this.table = new __WEBPACK_IMPORTED_MODULE_6__models_Table__["a" /* Table */]('', 0);
         this.sections = ['Indoor', 'Outdoor'];
         this.capacities = [1, 2, 3, 4, 5, 6, 7, 8];
         this.showAddTableForm = false;
         this.httpCient.get('api/table/get_tables').subscribe(data => {
             this.tableList = data['tables'].map(table => (table['id']));
-            console.log(data);
         });
     }
     prev() {
@@ -715,15 +718,15 @@ let HeaderComponent = class HeaderComponent {
                 console.log(data);
                 this.commonService.fillTable();
             }, err => console.log(err));
-            this.table = new __WEBPACK_IMPORTED_MODULE_5__models_Table__["a" /* Table */]('', 0);
+            this.table = new __WEBPACK_IMPORTED_MODULE_6__models_Table__["a" /* Table */]('', 0);
             this.hideAddTableForm();
         }
     }
     openDialog() {
-        let dialogRef = this.dialog.open(__WEBPACK_IMPORTED_MODULE_4__create_reservation_create_reservation_component__["a" /* CreateReservationComponent */], {
-            width: '700px',
-            height: '350px',
-            data: { "from": "header", "data": new __WEBPACK_IMPORTED_MODULE_6__models_Reservation__["c" /* Reservation */]('', new __WEBPACK_IMPORTED_MODULE_6__models_Reservation__["a" /* Attributes */](new Date(this.currentDate), 0, 0, 0, 0, '', new __WEBPACK_IMPORTED_MODULE_6__models_Reservation__["b" /* ContactDetails */]('', ''), [''], '')) }
+        let dialogRef = this.dialog.open(__WEBPACK_IMPORTED_MODULE_5__create_reservation_create_reservation_component__["a" /* CreateReservationComponent */], {
+            width: __WEBPACK_IMPORTED_MODULE_4__config__["a" /* config */].reservationFormWidth,
+            height: __WEBPACK_IMPORTED_MODULE_4__config__["a" /* config */].reservationFormHeight,
+            data: { "from": "header", "data": new __WEBPACK_IMPORTED_MODULE_7__models_Reservation__["c" /* Reservation */]('', new __WEBPACK_IMPORTED_MODULE_7__models_Reservation__["a" /* Attributes */](new Date(this.currentDate), 0, 0, 0, 0, '', new __WEBPACK_IMPORTED_MODULE_7__models_Reservation__["b" /* ContactDetails */]('', ''), [''], '')) }
         });
         dialogRef.afterClosed().subscribe(result => {
             this.commonService.fillTable();
@@ -738,7 +741,7 @@ HeaderComponent = __decorate([
         styles: [__webpack_require__("../../../../../src/app/header/header.component.scss")]
     }),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__angular_common_http__["a" /* HttpClient */], __WEBPACK_IMPORTED_MODULE_2__angular_common__["c" /* DatePipe */],
-        __WEBPACK_IMPORTED_MODULE_7__common_service__["a" /* CommonService */], __WEBPACK_IMPORTED_MODULE_3__angular_material__["c" /* MatDialog */]])
+        __WEBPACK_IMPORTED_MODULE_8__common_service__["a" /* CommonService */], __WEBPACK_IMPORTED_MODULE_3__angular_material__["c" /* MatDialog */]])
 ], HeaderComponent);
 
 
@@ -833,8 +836,9 @@ module.exports = module.exports.toString();
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm2015/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_common_http__ = __webpack_require__("../../../common/esm2015/http.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_material__ = __webpack_require__("../../../material/esm2015/material.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__create_reservation_create_reservation_component__ = __webpack_require__("../../../../../src/app/create-reservation/create-reservation.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__common_service__ = __webpack_require__("../../../../../src/app/common.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__config__ = __webpack_require__("../../../../../src/app/config.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__create_reservation_create_reservation_component__ = __webpack_require__("../../../../../src/app/create-reservation/create-reservation.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__common_service__ = __webpack_require__("../../../../../src/app/common.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -844,6 +848,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -867,9 +872,9 @@ let TileComponent = class TileComponent {
         });
     }
     openDialog() {
-        let dialogRef = this.dialog.open(__WEBPACK_IMPORTED_MODULE_3__create_reservation_create_reservation_component__["a" /* CreateReservationComponent */], {
-            width: '700px',
-            height: '350px',
+        let dialogRef = this.dialog.open(__WEBPACK_IMPORTED_MODULE_4__create_reservation_create_reservation_component__["a" /* CreateReservationComponent */], {
+            width: __WEBPACK_IMPORTED_MODULE_3__config__["a" /* config */].reservationFormWidth,
+            height: __WEBPACK_IMPORTED_MODULE_3__config__["a" /* config */].reservationFormHeight,
             data: { "from": "tile", "data": this.tile_data }
         });
         dialogRef.afterClosed().subscribe(result => {
@@ -889,7 +894,7 @@ TileComponent = __decorate([
         styles: [__webpack_require__("../../../../../src/app/tile/tile.component.scss")]
     }),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__angular_material__["c" /* MatDialog */], __WEBPACK_IMPORTED_MODULE_0__angular_core__["t" /* ElementRef */],
-        __WEBPACK_IMPORTED_MODULE_1__angular_common_http__["a" /* HttpClient */], __WEBPACK_IMPORTED_MODULE_4__common_service__["a" /* CommonService */]])
+        __WEBPACK_IMPORTED_MODULE_1__angular_common_http__["a" /* HttpClient */], __WEBPACK_IMPORTED_MODULE_5__common_service__["a" /* CommonService */]])
 ], TileComponent);
 
 

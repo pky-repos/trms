@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+
+import {config} from '../config';
 import { Reservation, Attributes, ContactDetails} from '../models/Reservation';
 import { CreateReservationComponent } from '../create-reservation/create-reservation.component';
 
@@ -22,8 +24,7 @@ import { Observable } from 'rxjs/Observable';
 export class CalenderComponent implements OnInit {
 
   currentDate: string;
-  opening: number;
-  closing: number;
+  openHoursDisplay: any[];
   openHours: any[];
   tables: Table[];
   tablesReservations: any[] = [];
@@ -43,21 +44,12 @@ export class CalenderComponent implements OnInit {
     this.commonService.getTable().subscribe((data) => {
       this.tables = data['tables'];
       this.tablesReservations = data['tablesReservations'];
-
-      // this.tablesReservations.sort(function(a,b){
-      //   return a.tableId - b.tableId;
-      //  });
-
-      console.log('data from service - ', data);
-      // console.log('sort in calender', this.tablesReservations);
     });
 
-    this.opening = 11;
-    this.closing = 21;
-
-
-    this.openHours = Array(this.closing - this.opening).
-      fill(0).map((x, i) => ((i + this.opening).toString() + ':00'));
+    this.openHoursDisplay = Array(config.closing - config.opening).
+      fill(0).map((x, i) => ((i + config.opening).toString() + ':00'));
+    
+    console.log('openhoursdisplay', this.openHoursDisplay);
 
     this.currentDate = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
 
@@ -66,8 +58,8 @@ export class CalenderComponent implements OnInit {
       this.commonService.fillTable();
     });
 
-    this.openHours = Array(this.closing - this.opening).
-      fill(0).map((x, i) => ((i + this.opening)));
+    this.openHours = Array(config.closing - config.opening).
+      fill(0).map((x, i) => ((i + config.opening)));
     console.log(this.openHours);
 
     this.commonService.fillTable();
@@ -80,8 +72,8 @@ export class CalenderComponent implements OnInit {
 
   openDialog(tableId, slot): void {
     this.dialogRef = this.dialog.open(CreateReservationComponent, {
-      width: '700px',
-      height: '350px',
+      width: config.reservationFormWidth,
+      height: config.reservationFormHeight,
       data: {"from":"calender", "data": new Reservation('', new Attributes(new Date(this.currentDate),
       +this.openHours[slot], +this.openHours[slot + 1], 0, tableId, '',
       new ContactDetails('', ''), [''], ''))}

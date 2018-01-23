@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { FormControl, ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators, AbstractControl} from '@angular/forms';
 
+import {config} from '../config';
 import { Table } from '../models/Table';
 import { Reservation, Attributes, ContactDetails} from '../models/Reservation';
 

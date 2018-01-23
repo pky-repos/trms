@@ -70,12 +70,6 @@ export class CommonService {
                 return slot['reservation_id'];
               })
             });
-            console.log('service - tablesreservations - ', this.tr);
-            this.tr.forEach(a => {
-              console.log('array style-', this['tableId']);
-              console.log('object style-', this.tr.tableId);
-            });
-
 
             let sortFn = function (a, b) {
               return a.tableId - b.tableId;
