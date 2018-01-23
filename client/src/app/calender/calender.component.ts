@@ -1,27 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 import { config } from '../config';
 import { Reservation, Attributes, ContactDetails } from '../models/Reservation';
 import { CreateReservationComponent } from '../create-reservation/create-reservation.component';
-
 import { Table } from '../models/Table';
-
 import { TileComponent } from '../tile/tile.component';
-
 import { DragdropDirective } from '../dragdrop.directive';
-
 import { CommonService } from '../common.service';
-import { Observable } from 'rxjs/Observable';
+import { Subscription } from 'rxjs/Subscription';
+import { OnDestroy, OnChanges } from '@angular/core/src/metadata/lifecycle_hooks';
 
 @Component({
   selector: 'app-calender',
   templateUrl: './calender.component.html',
   styleUrls: ['./calender.component.scss']
 })
-export class CalenderComponent implements OnInit {
+export class CalenderComponent implements OnInit, OnDestroy, OnChanges {
 
   currentDate: string;
   openHours: any[];
@@ -35,28 +33,30 @@ export class CalenderComponent implements OnInit {
 
   dialogRef: any;
 
+  getTableSub: Subscription;
+  getCurrentDateSub: Subscription;
+
   constructor(private httpCient: HttpClient, private datepipe: DatePipe,
     private commonService: CommonService, public dialog: MatDialog) { }
 
   ngOnInit() {
 
-    this.commonService.getTable().subscribe((data) => {
+    this.getTableSub = this.commonService.getTable().subscribe((data) => {
+      console.log('Calender - getTable observer');
       this.tables = data['tables'];
       this.tablesReservations = data['tablesReservations'];
     });
 
     this.openHours = this.commonService.getOpenHours();
 
-    console.log('openhours', this.openHours);
-
     this.currentDate = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
 
-    this.commonService.getCurrentDate().subscribe((date) => {
+    this.getCurrentDateSub = this.commonService.getCurrentDate().subscribe((date) => {
       this.currentDate = date;
-      this.commonService.fillTable();
+      // this.commonService.fillTable();
     });
 
-    this.commonService.fillTable();
+    // this.commonService.fillTable();
   }
 
   trackMouse(e, tableId, slot) {
@@ -74,13 +74,27 @@ export class CalenderComponent implements OnInit {
           this.openHours[slot].start.value, this.openHours[slot].end.value, 0, tableId, '',
           new ContactDetails('', ''), [''], ''))
       }
-
     });
 
     this.dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
       this.commonService.fillTable();
     });
   }
 
+  ngOnChanges() {
+    if (this.getTableSub) {
+      this.getTableSub.unsubscribe();
+    }
+    if (this.getCurrentDateSub) {
+      this.getCurrentDateSub.unsubscribe();
+    }
+  }
+  ngOnDestroy() {
+    if (this.getTableSub) {
+      this.getTableSub.unsubscribe();
+    }
+    if (this.getCurrentDateSub) {
+      this.getCurrentDateSub.unsubscribe();
+    }
+  }
 }

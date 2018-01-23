@@ -213,18 +213,18 @@ let CalenderComponent = class CalenderComponent {
         this.showForm = false;
     }
     ngOnInit() {
-        this.commonService.getTable().subscribe((data) => {
+        this.getTableSub = this.commonService.getTable().subscribe((data) => {
+            console.log('Calender - getTable observer');
             this.tables = data['tables'];
             this.tablesReservations = data['tablesReservations'];
         });
         this.openHours = this.commonService.getOpenHours();
-        console.log('openhours', this.openHours);
         this.currentDate = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
-        this.commonService.getCurrentDate().subscribe((date) => {
+        this.getCurrentDateSub = this.commonService.getCurrentDate().subscribe((date) => {
             this.currentDate = date;
-            this.commonService.fillTable();
+            // this.commonService.fillTable();
         });
-        this.commonService.fillTable();
+        // this.commonService.fillTable();
     }
     trackMouse(e, tableId, slot) {
         console.log('calender - mouse X = ', e.clientX, ' Y = ', e.clientY, tableId, slot);
@@ -240,9 +240,24 @@ let CalenderComponent = class CalenderComponent {
             }
         });
         this.dialogRef.afterClosed().subscribe(result => {
-            console.log('The dialog was closed');
             this.commonService.fillTable();
         });
+    }
+    ngOnChanges() {
+        if (this.getTableSub) {
+            this.getTableSub.unsubscribe();
+        }
+        if (this.getCurrentDateSub) {
+            this.getCurrentDateSub.unsubscribe();
+        }
+    }
+    ngOnDestroy() {
+        if (this.getTableSub) {
+            this.getTableSub.unsubscribe();
+        }
+        if (this.getCurrentDateSub) {
+            this.getCurrentDateSub.unsubscribe();
+        }
     }
 };
 CalenderComponent = __decorate([
@@ -279,7 +294,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 
-// var Rx = require('rxjs/Rx');
 
 
 
@@ -288,56 +302,59 @@ let CommonService = class CommonService {
         this.httpCient = httpCient;
         this.currentDateSubject = new __WEBPACK_IMPORTED_MODULE_1_rxjs__["Subject"]();
         this.gridSubject = new __WEBPACK_IMPORTED_MODULE_1_rxjs__["Subject"]();
-        this.opening = 11;
-        this.closing = 21;
-        this.openHours = Array(this.closing - this.opening).
-            fill(0).map((x, i) => ((i + this.opening).toString() + ':00'));
     }
     setCurrentDate(date) {
-        this.currentDate = date;
+        // this.currentDate = date;
+        console.log('Service - setCurrentDate function');
         this.currentDateSubject.next(date);
     }
     getCurrentDate() {
-        return this.currentDateSubject.asObservable();
+        console.log('Service - getCurrentDate Observable');
+        return this.currentDateSubject.asObservable().debounceTime(1000);
     }
     getTable() {
-        return this.gridSubject.asObservable();
+        console.log('Service - getTable observable');
+        return this.gridSubject.asObservable().debounceTime(1000);
     }
     fillTable() {
-        console.log('inside fillTable');
-        this.tr = [];
-        this.httpCient.get('api/table/get_tables').subscribe(data => {
-            this.tables = data['tables'];
-            //console.log('service', this.tables);
-            data['tables'].forEach(table => {
-                // console.log('forEach order', table['id']);
-                this.httpCient.get('api/table/get_table_reservations/' + table['id'] + '/' + this.currentDate)
-                    .subscribe(tableReservation => {
-                    this.tr.push({
-                        tableId: +table['id'],
-                        slot: Array(this.closing - this.opening).fill({}).map((val, index) => ({
-                            'start': this.opening + index,
-                            'end': this.opening + index + 1,
-                            'reservation_id': 0
-                        })).map(slot => {
-                            tableReservation['reservations'].forEach(reservation => {
-                                if (reservation['attributes']['slot_start'] == slot['start']) {
-                                    slot['reservation_id'] = reservation['reservation_id'];
-                                }
-                            });
-                            return slot['reservation_id'];
-                        })
+        console.log('Service - fillTable function');
+        this.getCurrentDate().subscribe(date => {
+            this.tr = [];
+            this.httpCient.get('api/table/get_tables').subscribe(data => {
+                this.tables = data['tables'];
+                //console.log('service', this.tables);
+                data['tables'].forEach(table => {
+                    // console.log('forEach order', table['id']);
+                    this.httpCient.get('api/table/get_table_reservations/' + table['id'] + '/' + date)
+                        .subscribe(tableReservation => {
+                        this.tr.push({
+                            tableId: +table['id'],
+                            slot: Array(__WEBPACK_IMPORTED_MODULE_3__config__["a" /* config */].closing - __WEBPACK_IMPORTED_MODULE_3__config__["a" /* config */].opening).fill({}).map((val, index) => ({
+                                'start': __WEBPACK_IMPORTED_MODULE_3__config__["a" /* config */].opening + index,
+                                'end': __WEBPACK_IMPORTED_MODULE_3__config__["a" /* config */].opening + index + 1,
+                                'reservation_id': 0
+                            })).map(slot => {
+                                tableReservation['reservations'].forEach(reservation => {
+                                    if (reservation['attributes']['slot_start'] == slot['start']) {
+                                        slot['reservation_id'] = reservation['reservation_id'];
+                                    }
+                                });
+                                return slot['reservation_id'];
+                            })
+                        });
+                    }, err => console.log(err), () => {
                     });
-                    let sortFn = function (a, b) {
-                        return a.tableId - b.tableId;
-                    };
-                    this.tr.sort(sortFn);
-                    console.log('service - tablesreservations - sorted', this.tr);
-                    this.gridSubject.next({
-                        'tables': this.tables.sort(),
-                        'tablesReservations': this.tr
-                    });
-                }, err => console.log(err));
+                });
+            }, err => console.log(err), () => {
+                let sortFn = function (a, b) {
+                    return a.tableId - b.tableId;
+                };
+                this.tr.sort(sortFn);
+                console.log('service - tablesreservations - sorted', this.tr);
+                this.gridSubject.next({
+                    'tables': this.tables.sort(),
+                    'tablesReservations': this.tr
+                });
             });
         });
     }
@@ -386,15 +403,21 @@ const config = {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+const Sections = ['Indoor', 'Outdoor'];
+/* harmony export (immutable) */ __webpack_exports__["c"] = Sections;
+
+const Capacities = [1, 2, 3, 4, 5, 6, 7, 8];
+/* harmony export (immutable) */ __webpack_exports__["a"] = Capacities;
+
 const ReservationTypes = ['Walk-In', 'Phone', 'Online'];
-/* harmony export (immutable) */ __webpack_exports__["a"] = ReservationTypes;
+/* harmony export (immutable) */ __webpack_exports__["b"] = ReservationTypes;
 
 const Tags = ['Birthday', 'Anniversary', 'A la carte/ Buffet', 'Zomato/ Dineout', 'Outside Requested',
     'Indoor Requested', 'Window Requested', 'Smoking Area'];
-/* harmony export (immutable) */ __webpack_exports__["c"] = Tags;
+/* harmony export (immutable) */ __webpack_exports__["e"] = Tags;
 
 const Statuses = ['Arrived', 'Seated', 'Finished', 'Cancel', 'No-Show'];
-/* harmony export (immutable) */ __webpack_exports__["b"] = Statuses;
+/* harmony export (immutable) */ __webpack_exports__["d"] = Statuses;
 
 
 
@@ -470,12 +493,12 @@ let CreateReservationComponent = class CreateReservationComponent {
     ngOnInit() {
         this.openHours = this.commonService.getOpenHours();
         this.reservation = new __WEBPACK_IMPORTED_MODULE_5__models_Reservation__["c" /* Reservation */]('', new __WEBPACK_IMPORTED_MODULE_5__models_Reservation__["a" /* Attributes */](new Date(0, 0), 0, 0, 0, 0, '', new __WEBPACK_IMPORTED_MODULE_5__models_Reservation__["b" /* ContactDetails */]('', ''), [''], ''));
-        this.reservationTypes = __WEBPACK_IMPORTED_MODULE_4__constants__["a" /* ReservationTypes */];
+        this.reservationTypes = __WEBPACK_IMPORTED_MODULE_4__constants__["b" /* ReservationTypes */];
         this.showReservationForm = false;
-        this.tags = __WEBPACK_IMPORTED_MODULE_4__constants__["c" /* Tags */].map((tag, i) => {
+        this.tags = __WEBPACK_IMPORTED_MODULE_4__constants__["e" /* Tags */].map((tag, i) => {
             return { name: tag, value: i, checked: false };
         });
-        this.statuses = __WEBPACK_IMPORTED_MODULE_4__constants__["b" /* Statuses */];
+        this.statuses = __WEBPACK_IMPORTED_MODULE_4__constants__["d" /* Statuses */];
         this.httpCient.get('api/table/get_tables').subscribe(data => {
             this.tableList = data['tables'].map(table => (table['id']));
             console.log(data);
@@ -671,10 +694,11 @@ module.exports = module.exports.toString();
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_common__ = __webpack_require__("../../../common/esm2015/common.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_material__ = __webpack_require__("../../../material/esm2015/material.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__config__ = __webpack_require__("../../../../../src/app/config.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__create_reservation_create_reservation_component__ = __webpack_require__("../../../../../src/app/create-reservation/create-reservation.component.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__models_Table__ = __webpack_require__("../../../../../src/app/models/Table.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__models_Reservation__ = __webpack_require__("../../../../../src/app/models/Reservation.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__common_service__ = __webpack_require__("../../../../../src/app/common.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__constants__ = __webpack_require__("../../../../../src/app/constants.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__create_reservation_create_reservation_component__ = __webpack_require__("../../../../../src/app/create-reservation/create-reservation.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__models_Table__ = __webpack_require__("../../../../../src/app/models/Table.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__models_Reservation__ = __webpack_require__("../../../../../src/app/models/Reservation.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__common_service__ = __webpack_require__("../../../../../src/app/common.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -684,6 +708,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -703,16 +728,16 @@ let HeaderComponent = class HeaderComponent {
     ngOnInit() {
         this.currentDate = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
         this.commonService.setCurrentDate(this.currentDate);
-        this.table = new __WEBPACK_IMPORTED_MODULE_6__models_Table__["a" /* Table */]('', 0);
-        this.sections = ['Indoor', 'Outdoor'];
-        this.capacities = [1, 2, 3, 4, 5, 6, 7, 8];
+        this.commonService.fillTable();
+        this.table = new __WEBPACK_IMPORTED_MODULE_7__models_Table__["a" /* Table */]('', 0);
+        this.sections = __WEBPACK_IMPORTED_MODULE_5__constants__["c" /* Sections */];
+        this.capacities = __WEBPACK_IMPORTED_MODULE_5__constants__["a" /* Capacities */];
         this.showAddTableForm = false;
         this.httpCient.get('api/table/get_tables').subscribe(data => {
             this.tableList = data['tables'].map(table => (table['id']));
         });
     }
     prev() {
-        console.log(this.currentDate);
         this.currentDate = this.datepipe.transform(new Date(new Date(this.currentDate).getFullYear(), new Date(this.currentDate).getMonth(), new Date(this.currentDate).getDate() - 1), 'yyyy-MM-dd');
         console.log(this.currentDate);
         this.commonService.setCurrentDate(this.currentDate);
@@ -720,9 +745,9 @@ let HeaderComponent = class HeaderComponent {
     today() {
         this.currentDate = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
         this.commonService.setCurrentDate(this.currentDate);
+        console.log(this.currentDate);
     }
     next() {
-        console.log(this.currentDate);
         this.currentDate = this.datepipe.transform(new Date(new Date(this.currentDate).getFullYear(), new Date(this.currentDate).getMonth(), new Date(this.currentDate).getDate() + 1), 'yyyy-MM-dd');
         console.log(this.currentDate);
         this.commonService.setCurrentDate(this.currentDate);
@@ -749,15 +774,15 @@ let HeaderComponent = class HeaderComponent {
                 console.log(data);
                 this.commonService.fillTable();
             }, err => console.log(err));
-            this.table = new __WEBPACK_IMPORTED_MODULE_6__models_Table__["a" /* Table */]('', 0);
+            this.table = new __WEBPACK_IMPORTED_MODULE_7__models_Table__["a" /* Table */]('', 0);
             this.hideAddTableForm();
         }
     }
     openDialog() {
-        let dialogRef = this.dialog.open(__WEBPACK_IMPORTED_MODULE_5__create_reservation_create_reservation_component__["a" /* CreateReservationComponent */], {
+        let dialogRef = this.dialog.open(__WEBPACK_IMPORTED_MODULE_6__create_reservation_create_reservation_component__["a" /* CreateReservationComponent */], {
             width: __WEBPACK_IMPORTED_MODULE_4__config__["a" /* config */].reservationFormWidth,
             height: __WEBPACK_IMPORTED_MODULE_4__config__["a" /* config */].reservationFormHeight,
-            data: { "from": "header", "data": new __WEBPACK_IMPORTED_MODULE_7__models_Reservation__["c" /* Reservation */]('', new __WEBPACK_IMPORTED_MODULE_7__models_Reservation__["a" /* Attributes */](new Date(this.currentDate), 0, 0, 0, 0, '', new __WEBPACK_IMPORTED_MODULE_7__models_Reservation__["b" /* ContactDetails */]('', ''), [''], '')) }
+            data: { "from": "header", "data": new __WEBPACK_IMPORTED_MODULE_8__models_Reservation__["c" /* Reservation */]('', new __WEBPACK_IMPORTED_MODULE_8__models_Reservation__["a" /* Attributes */](new Date(this.currentDate), 0, 0, 0, 0, '', new __WEBPACK_IMPORTED_MODULE_8__models_Reservation__["b" /* ContactDetails */]('', ''), [''], '')) }
         });
         dialogRef.afterClosed().subscribe(result => {
             this.commonService.fillTable();
@@ -772,7 +797,7 @@ HeaderComponent = __decorate([
         styles: [__webpack_require__("../../../../../src/app/header/header.component.scss")]
     }),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__angular_common_http__["a" /* HttpClient */], __WEBPACK_IMPORTED_MODULE_2__angular_common__["c" /* DatePipe */],
-        __WEBPACK_IMPORTED_MODULE_8__common_service__["a" /* CommonService */], __WEBPACK_IMPORTED_MODULE_3__angular_material__["c" /* MatDialog */]])
+        __WEBPACK_IMPORTED_MODULE_9__common_service__["a" /* CommonService */], __WEBPACK_IMPORTED_MODULE_3__angular_material__["c" /* MatDialog */]])
 ], HeaderComponent);
 
 

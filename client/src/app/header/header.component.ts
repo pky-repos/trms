@@ -5,6 +5,7 @@ import { DatePipe } from '@angular/common';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
 import {config} from '../config';
+import {Sections, Capacities} from '../constants';
 import {CreateReservationComponent} from '../create-reservation/create-reservation.component';
 import {Table} from '../models/Table';
 import {Reservation, Attributes, ContactDetails} from '../models/Reservation';
@@ -20,8 +21,8 @@ export class HeaderComponent implements OnInit {
 
   private currentDate: string;
   private table: Table;
-  private sections: [string]
-  private capacities: [Number];
+  private sections: string[]
+  private capacities: Number[];
   private showAddTableForm: boolean;
 
   private tableList: number;
@@ -35,12 +36,12 @@ export class HeaderComponent implements OnInit {
     this.currentDate = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
 
     this.commonService.setCurrentDate(this.currentDate);
+    this.commonService.fillTable();
 
     this.table = new Table('', 0);
-    this.sections = ['Indoor', 'Outdoor'];
-    this.capacities = [1, 2, 3, 4, 5, 6, 7, 8];
+    this.sections = Sections;
+    this.capacities = Capacities;
     this.showAddTableForm = false;
-
     
     this.httpCient.get('api/table/get_tables').subscribe(data => {
       this.tableList = data['tables'].map(table => (table['id']));
@@ -48,8 +49,6 @@ export class HeaderComponent implements OnInit {
   }
 
   prev() {
-    console.log(this.currentDate);
-
     this.currentDate = this.datepipe.transform( new Date(
       new Date(this.currentDate).getFullYear(),
       new Date(this.currentDate).getMonth(),
@@ -59,16 +58,18 @@ export class HeaderComponent implements OnInit {
     console.log(this.currentDate);
 
     this.commonService.setCurrentDate(this.currentDate);
+    
   }
 
   today() {
     this.currentDate = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
     this.commonService.setCurrentDate(this.currentDate);
+
+    console.log(this.currentDate);
+
   }
 
   next() {
-    console.log(this.currentDate);
-
     this.currentDate = this.datepipe.transform( new Date(
       new Date(this.currentDate).getFullYear(),
       new Date(this.currentDate).getMonth(),
