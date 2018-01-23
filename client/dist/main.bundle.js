@@ -148,7 +148,7 @@ AppModule = __decorate([
 /***/ "../../../../../src/app/calender/calender.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div style=\"text-align: center;\" *ngIf=\"tablesReservations\">\r\n  <!-- {{currentDate}} -->\r\n  <table class=\"table table-striped\" style=\"padding:10px;\">\r\n    <tr>\r\n      <td>\r\n        <table class=\"table table-striped\">\r\n          <tr>\r\n            <td></td>\r\n          </tr>\r\n          <ng-container *ngFor=\"let table of tables\">\r\n            <tr>\r\n              <th>{{table.id}}</th>\r\n            </tr>\r\n          </ng-container>\r\n        </table>\r\n      </td>\r\n      <td>\r\n        <table class=\"table table-striped\" id=\"tableReservations\">\r\n          <thead>\r\n            <tr>\r\n              <ng-container *ngFor=\"let hour of openHoursDisplay\"> \r\n                <th>\r\n                  {{hour}}\r\n                </th>\r\n              </ng-container>\r\n            </tr>\r\n          </thead>\r\n          <tbody >\r\n            <ng-container *ngFor=\"let tablesReservation of tablesReservations\">\r\n              <tr>\r\n                <ng-container *ngFor=\"let reservation of tablesReservation.slot; let i=index\"\r\n                 >\r\n                  <td (click)=\"trackMouse($event, tablesReservation['tableId'], i)\">\r\n                    <ng-container *ngIf=\"reservation != 0\">\r\n                      <!-- {{reservation}} -->\r\n                      <app-tile [reservation_id]=\"reservation\" dragdrop></app-tile>\r\n                      <!-- <div *ngIf=\"showForm\">\r\n                        <app-create-reservation></app-create-reservation>\r\n                      </div> -->\r\n                    </ng-container>\r\n                  </td>\r\n                </ng-container>\r\n              </tr>\r\n            </ng-container>\r\n          </tbody>\r\n        </table>\r\n      </td>\r\n    </tr>\r\n  </table>\r\n</div>"
+module.exports = "<div style=\"text-align: center;\" *ngIf=\"tablesReservations\">\r\n  <!-- {{currentDate}} -->\r\n  <table class=\"table table-striped\" style=\"padding:10px;\">\r\n    <tr>\r\n      <td>\r\n        <table class=\"table table-striped\">\r\n          <tr>\r\n            <td></td>\r\n          </tr>\r\n          <ng-container *ngFor=\"let table of tables\">\r\n            <tr>\r\n              <th>{{table.id}}</th>\r\n            </tr>\r\n          </ng-container>\r\n        </table>\r\n      </td>\r\n      <td>\r\n        <table class=\"table table-striped\" id=\"tableReservations\">\r\n          <thead>\r\n            <tr>\r\n              <ng-container *ngFor=\"let hour of openHours\"> \r\n                <th>\r\n                  {{hour.start.display}}\r\n                </th>\r\n              </ng-container>\r\n            </tr>\r\n          </thead>\r\n          <tbody >\r\n            <ng-container *ngFor=\"let tablesReservation of tablesReservations\">\r\n              <tr>\r\n                <ng-container *ngFor=\"let reservation of tablesReservation.slot; let i=index\"\r\n                 >\r\n                  <td (click)=\"trackMouse($event, tablesReservation['tableId'], i)\">\r\n                    <ng-container *ngIf=\"reservation != 0\">\r\n                      <!-- {{reservation}} -->\r\n                      <app-tile [reservation_id]=\"reservation\" dragdrop></app-tile>\r\n                      <!-- <div *ngIf=\"showForm\">\r\n                        <app-create-reservation></app-create-reservation>\r\n                      </div> -->\r\n                    </ng-container>\r\n                  </td>\r\n                </ng-container>\r\n              </tr>\r\n            </ng-container>\r\n          </tbody>\r\n        </table>\r\n      </td>\r\n    </tr>\r\n  </table>\r\n</div>"
 
 /***/ }),
 
@@ -217,17 +217,13 @@ let CalenderComponent = class CalenderComponent {
             this.tables = data['tables'];
             this.tablesReservations = data['tablesReservations'];
         });
-        this.openHoursDisplay = Array(__WEBPACK_IMPORTED_MODULE_4__config__["a" /* config */].closing - __WEBPACK_IMPORTED_MODULE_4__config__["a" /* config */].opening).
-            fill(0).map((x, i) => ((i + __WEBPACK_IMPORTED_MODULE_4__config__["a" /* config */].opening).toString() + ':00'));
-        console.log('openhoursdisplay', this.openHoursDisplay);
+        this.openHours = this.commonService.getOpenHours();
+        console.log('openhours', this.openHours);
         this.currentDate = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
         this.commonService.getCurrentDate().subscribe((date) => {
             this.currentDate = date;
             this.commonService.fillTable();
         });
-        this.openHours = Array(__WEBPACK_IMPORTED_MODULE_4__config__["a" /* config */].closing - __WEBPACK_IMPORTED_MODULE_4__config__["a" /* config */].opening).
-            fill(0).map((x, i) => ((i + __WEBPACK_IMPORTED_MODULE_4__config__["a" /* config */].opening)));
-        console.log(this.openHours);
         this.commonService.fillTable();
     }
     trackMouse(e, tableId, slot) {
@@ -238,7 +234,10 @@ let CalenderComponent = class CalenderComponent {
         this.dialogRef = this.dialog.open(__WEBPACK_IMPORTED_MODULE_6__create_reservation_create_reservation_component__["a" /* CreateReservationComponent */], {
             width: __WEBPACK_IMPORTED_MODULE_4__config__["a" /* config */].reservationFormWidth,
             height: __WEBPACK_IMPORTED_MODULE_4__config__["a" /* config */].reservationFormHeight,
-            data: { "from": "calender", "data": new __WEBPACK_IMPORTED_MODULE_5__models_Reservation__["c" /* Reservation */]('', new __WEBPACK_IMPORTED_MODULE_5__models_Reservation__["a" /* Attributes */](new Date(this.currentDate), +this.openHours[slot], +this.openHours[slot + 1], 0, tableId, '', new __WEBPACK_IMPORTED_MODULE_5__models_Reservation__["b" /* ContactDetails */]('', ''), [''], '')) }
+            data: {
+                "from": "calender",
+                "data": new __WEBPACK_IMPORTED_MODULE_5__models_Reservation__["c" /* Reservation */]('', new __WEBPACK_IMPORTED_MODULE_5__models_Reservation__["a" /* Attributes */](new Date(this.currentDate), this.openHours[slot].start.value, this.openHours[slot].end.value, 0, tableId, '', new __WEBPACK_IMPORTED_MODULE_5__models_Reservation__["b" /* ContactDetails */]('', ''), [''], ''))
+            }
         });
         this.dialogRef.afterClosed().subscribe(result => {
             console.log('The dialog was closed');
@@ -269,6 +268,7 @@ CalenderComponent = __decorate([
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs__ = __webpack_require__("../../../../rxjs/Rx.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_common_http__ = __webpack_require__("../../../common/esm2015/http.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__config__ = __webpack_require__("../../../../../src/app/config.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -280,6 +280,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 // var Rx = require('rxjs/Rx');
+
 
 
 let CommonService = class CommonService {
@@ -340,6 +341,21 @@ let CommonService = class CommonService {
             });
         });
     }
+    getOpenHours() {
+        return Array(__WEBPACK_IMPORTED_MODULE_3__config__["a" /* config */].closing - __WEBPACK_IMPORTED_MODULE_3__config__["a" /* config */].opening).
+            fill(0).map((x, i) => {
+            return {
+                start: {
+                    value: i + __WEBPACK_IMPORTED_MODULE_3__config__["a" /* config */].opening,
+                    display: (i + __WEBPACK_IMPORTED_MODULE_3__config__["a" /* config */].opening).toString() + ':00'
+                },
+                end: {
+                    value: i + __WEBPACK_IMPORTED_MODULE_3__config__["a" /* config */].opening + 1,
+                    display: (i + __WEBPACK_IMPORTED_MODULE_3__config__["a" /* config */].opening + 1).toString() + ':00'
+                }
+            };
+        });
+    }
 };
 CommonService = __decorate([
     Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["z" /* Injectable */])(),
@@ -358,9 +374,27 @@ const config = {
     opening: 11,
     closing: 21,
     reservationFormWidth: '700px',
-    reservationFormHeight: '360px'
+    reservationFormHeight: '370px'
 };
 /* harmony export (immutable) */ __webpack_exports__["a"] = config;
+
+
+
+/***/ }),
+
+/***/ "../../../../../src/app/constants.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+const ReservationTypes = ['Walk-In', 'Phone', 'Online'];
+/* harmony export (immutable) */ __webpack_exports__["a"] = ReservationTypes;
+
+const Tags = ['Birthday', 'Anniversary', 'A la carte/ Buffet', 'Zomato/ Dineout', 'Outside Requested',
+    'Indoor Requested', 'Window Requested', 'Smoking Area'];
+/* harmony export (immutable) */ __webpack_exports__["c"] = Tags;
+
+const Statuses = ['Arrived', 'Seated', 'Finished', 'Cancel', 'No-Show'];
+/* harmony export (immutable) */ __webpack_exports__["b"] = Statuses;
 
 
 
@@ -369,7 +403,7 @@ const config = {
 /***/ "../../../../../src/app/create-reservation/create-reservation.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"reservation\" *ngIf=\"reservationForm\">\r\n    <form (ngSubmit)=\"onReservationSubmit()\" [formGroup]=\"reservationForm\">\r\n\r\n        <mat-form-field>\r\n            <mat-select placeholder=\"Type\" formControlName=\"type\">\r\n                <!-- <mat-option>None</mat-option> -->\r\n                <mat-option *ngFor=\"let type of reservationTypes\" [value]=\"type\">{{type}}</mat-option>\r\n            </mat-select>\r\n        </mat-form-field>\r\n\r\n        <div formGroupName=\"attributes\">\r\n            <mat-form-field>\r\n                <input matInput [matDatepicker]=\"picker\" placeholder=\"Choose a date\" formControlName=\"date_time\">\r\n                <mat-datepicker-toggle matSuffix [for]=\"picker\"></mat-datepicker-toggle>\r\n                <mat-datepicker #picker></mat-datepicker>\r\n            </mat-form-field>\r\n\r\n            <mat-form-field>\r\n                <mat-select placeholder=\"Slot Start\" formControlName=\"slot_start\">\r\n                    <!-- <mat-option>None</mat-option> -->\r\n                    <mat-option *ngFor=\"let openHour of openHours\" [value]=\"openHour.value\">{{openHour.display}}</mat-option>\r\n                </mat-select>\r\n            </mat-form-field>\r\n\r\n            <mat-form-field>\r\n                <mat-select placeholder=\"Slot End\" formControlName=\"slot_end\">\r\n                    <!-- <mat-option>None</mat-option> -->\r\n                    <mat-option *ngFor=\"let openHour of openHours\" [value]=\"openHour.value\">{{openHour.display}}</mat-option>\r\n                </mat-select>\r\n            </mat-form-field>\r\n\r\n\r\n            <mat-form-field>\r\n                <mat-select placeholder=\"Guest Count\" formControlName=\"guest_count\">\r\n                    <!-- <mat-option>None</mat-option> -->\r\n                    <mat-option *ngFor=\"let guest of guestCountList\" [value]=\"guest\">{{guest}}</mat-option>\r\n                </mat-select>\r\n            </mat-form-field>\r\n\r\n\r\n            <mat-form-field>\r\n                <mat-select placeholder=\"Table\" formControlName=\"table_number\">\r\n                    <!-- <mat-option>None</mat-option> -->\r\n                    <mat-option *ngFor=\"let table of tableList\" [value]=\"table\">{{table}}</mat-option>\r\n                </mat-select>\r\n            </mat-form-field>\r\n\r\n            <mat-form-field>\r\n                <input matInput type=\"text\" placeholder=\"Mobile\" formControlName=\"mobile\">\r\n            </mat-form-field>\r\n\r\n            <div formGroupName=\"contact_details\">\r\n                <mat-form-field>\r\n                    <input matInput type=\"text\" placeholder=\"Name\" formControlName=\"name\">\r\n                </mat-form-field>\r\n                <mat-form-field>\r\n                    <input matInput type=\"email\" placeholder=\"Email\" formControlName=\"email\">\r\n                </mat-form-field>\r\n            </div>\r\n\r\n            <mat-form-field>\r\n                <mat-select placeholder=\"Tags\" formControlName=\"tags\" multiple>\r\n                    <mat-option *ngFor=\"let tag of tags\" [value]=\"tag.name\">{{tag.name}}</mat-option>\r\n                </mat-select>\r\n            </mat-form-field>\r\n\r\n            <mat-form-field>\r\n                <mat-select placeholder=\"Status\" formControlName=\"status\">\r\n                    <!-- <mat-option>None</mat-option> -->\r\n                    <mat-option *ngFor=\"let status of statuses\" [value]=\"status\">{{status}}</mat-option>\r\n                </mat-select>\r\n            </mat-form-field>\r\n        </div>\r\n        <div>\r\n            <span>\r\n                <button type=\"button\" class=\"btn btn-light\" (click)=\"hideCreateReservationForm()\">Cancel</button>\r\n            </span>\r\n            <span>\r\n                <button type=\"button\" class=\"btn btn-warning\" (click)=\"update()\">Update</button>\r\n            </span>\r\n            <span>\r\n                <button type=\"button\" class=\"btn btn-danger\" (click)=\"delete()\">Delete</button>\r\n            </span>\r\n            <span>\r\n                <button type=\"submit\" class=\"btn btn-success\" [disabled]=\"!reservationForm.valid\">Submit</button>\r\n            </span>\r\n        </div>\r\n    </form>\r\n\r\n\r\n</div>"
+module.exports = "<div class=\"reservation\" *ngIf=\"reservationForm\">\r\n    <form (ngSubmit)=\"onReservationSubmit()\" [formGroup]=\"reservationForm\">\r\n\r\n        <mat-form-field>\r\n            <mat-select placeholder=\"Type\" formControlName=\"type\">\r\n                <!-- <mat-option>None</mat-option> -->\r\n                <mat-option *ngFor=\"let type of reservationTypes\" [value]=\"type\">{{type}}</mat-option>\r\n            </mat-select>\r\n        </mat-form-field>\r\n\r\n        <div formGroupName=\"attributes\">\r\n            <mat-form-field>\r\n                <input matInput [matDatepicker]=\"picker\" placeholder=\"Choose a date\" formControlName=\"date_time\">\r\n                <mat-datepicker-toggle matSuffix [for]=\"picker\"></mat-datepicker-toggle>\r\n                <mat-datepicker #picker></mat-datepicker>\r\n            </mat-form-field>\r\n\r\n            <mat-form-field>\r\n                <mat-select placeholder=\"Slot Start\" formControlName=\"slot_start\">\r\n                    <!-- <mat-option>None</mat-option> -->\r\n                    <mat-option *ngFor=\"let openHour of openHours\" [value]=\"openHour.start.value\">{{openHour.start.display}}</mat-option>\r\n                </mat-select>\r\n            </mat-form-field>\r\n\r\n            <mat-form-field>\r\n                <mat-select placeholder=\"Slot End\" formControlName=\"slot_end\">\r\n                    <!-- <mat-option>None</mat-option> -->\r\n                    <mat-option *ngFor=\"let openHour of openHours\" [value]=\"openHour.end.value\">{{openHour.end.display}}</mat-option>\r\n                </mat-select>\r\n            </mat-form-field>\r\n\r\n\r\n            <mat-form-field>\r\n                <mat-select placeholder=\"Guest Count\" formControlName=\"guest_count\">\r\n                    <!-- <mat-option>None</mat-option> -->\r\n                    <mat-option *ngFor=\"let guest of guestCountList\" [value]=\"guest\">{{guest}}</mat-option>\r\n                </mat-select>\r\n            </mat-form-field>\r\n\r\n\r\n            <mat-form-field>\r\n                <mat-select placeholder=\"Table\" formControlName=\"table_number\">\r\n                    <!-- <mat-option>None</mat-option> -->\r\n                    <mat-option *ngFor=\"let table of tableList\" [value]=\"table\">{{table}}</mat-option>\r\n                </mat-select>\r\n            </mat-form-field>\r\n\r\n            <mat-form-field>\r\n                <input matInput type=\"text\" placeholder=\"Mobile\" formControlName=\"mobile\">\r\n            </mat-form-field>\r\n\r\n            <div formGroupName=\"contact_details\">\r\n                <mat-form-field>\r\n                    <input matInput type=\"text\" placeholder=\"Name\" formControlName=\"name\">\r\n                </mat-form-field>\r\n                <mat-form-field>\r\n                    <input matInput type=\"email\" placeholder=\"Email\" formControlName=\"email\">\r\n                </mat-form-field>\r\n            </div>\r\n\r\n            <mat-form-field>\r\n                <mat-select placeholder=\"Tags\" formControlName=\"tags\" multiple>\r\n                    <mat-option *ngFor=\"let tag of tags\" [value]=\"tag.name\">{{tag.name}}</mat-option>\r\n                </mat-select>\r\n            </mat-form-field>\r\n\r\n            <mat-form-field>\r\n                <mat-select placeholder=\"Status\" formControlName=\"status\">\r\n                    <!-- <mat-option>None</mat-option> -->\r\n                    <mat-option *ngFor=\"let status of statuses\" [value]=\"status\">{{status}}</mat-option>\r\n                </mat-select>\r\n            </mat-form-field>\r\n        </div>\r\n        <div>\r\n            <span>\r\n                <button type=\"button\" class=\"btn btn-light\" (click)=\"hideCreateReservationForm()\">Cancel</button>\r\n            </span>\r\n            <span>\r\n                <button type=\"button\" class=\"btn btn-warning\" (click)=\"update()\">Update</button>\r\n            </span>\r\n            <span>\r\n                <button type=\"button\" class=\"btn btn-danger\" (click)=\"delete()\">Delete</button>\r\n            </span>\r\n            <span>\r\n                <button type=\"submit\" class=\"btn btn-success\" [disabled]=\"!reservationForm.valid\">Submit</button>\r\n            </span>\r\n        </div>\r\n    </form>\r\n\r\n\r\n</div>"
 
 /***/ }),
 
@@ -400,9 +434,10 @@ module.exports = module.exports.toString();
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_common_http__ = __webpack_require__("../../../common/esm2015/http.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_common__ = __webpack_require__("../../../common/esm2015/common.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_forms__ = __webpack_require__("../../../forms/esm2015/forms.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__models_Reservation__ = __webpack_require__("../../../../../src/app/models/Reservation.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__common_service__ = __webpack_require__("../../../../../src/app/common.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__angular_material__ = __webpack_require__("../../../material/esm2015/material.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__constants__ = __webpack_require__("../../../../../src/app/constants.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__models_Reservation__ = __webpack_require__("../../../../../src/app/models/Reservation.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__common_service__ = __webpack_require__("../../../../../src/app/common.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__angular_material__ = __webpack_require__("../../../material/esm2015/material.js");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -422,6 +457,7 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 
 
 
+
 let CreateReservationComponent = class CreateReservationComponent {
     constructor(httpCient, datepipe, commonService, dialogRef, data, fb) {
         this.httpCient = httpCient;
@@ -432,19 +468,14 @@ let CreateReservationComponent = class CreateReservationComponent {
         this.fb = fb;
     }
     ngOnInit() {
-        this.opening = 11;
-        this.closing = 21;
-        this.openHours = Array(this.closing - this.opening).
-            fill(0).map((x, i) => ({ 'value': i + this.opening, 'display': (i + this.opening).toString() + ':00' }));
-        console.log('openhours-', this.openHours);
-        this.reservation = new __WEBPACK_IMPORTED_MODULE_4__models_Reservation__["c" /* Reservation */]('', new __WEBPACK_IMPORTED_MODULE_4__models_Reservation__["a" /* Attributes */](new Date(0, 0), 0, 0, 0, 0, '', new __WEBPACK_IMPORTED_MODULE_4__models_Reservation__["b" /* ContactDetails */]('', ''), [''], ''));
-        this.reservationTypes = ['Walk-In', 'Phone', 'Online'];
+        this.openHours = this.commonService.getOpenHours();
+        this.reservation = new __WEBPACK_IMPORTED_MODULE_5__models_Reservation__["c" /* Reservation */]('', new __WEBPACK_IMPORTED_MODULE_5__models_Reservation__["a" /* Attributes */](new Date(0, 0), 0, 0, 0, 0, '', new __WEBPACK_IMPORTED_MODULE_5__models_Reservation__["b" /* ContactDetails */]('', ''), [''], ''));
+        this.reservationTypes = __WEBPACK_IMPORTED_MODULE_4__constants__["a" /* ReservationTypes */];
         this.showReservationForm = false;
-        this.tags = ['Birthday', 'Anniversary', 'A la carte/ Buffet', 'Zomato/ Dineout', 'Outside Requested',
-            'Indoor Requested', 'Window Requested', 'Smoking Area'].map((tag, i) => {
+        this.tags = __WEBPACK_IMPORTED_MODULE_4__constants__["c" /* Tags */].map((tag, i) => {
             return { name: tag, value: i, checked: false };
         });
-        this.statuses = ['Arrived', 'Seated', 'Finished', 'Cancel', 'No-Show'];
+        this.statuses = __WEBPACK_IMPORTED_MODULE_4__constants__["b" /* Statuses */];
         this.httpCient.get('api/table/get_tables').subscribe(data => {
             this.tableList = data['tables'].map(table => (table['id']));
             console.log(data);
@@ -505,7 +536,7 @@ let CreateReservationComponent = class CreateReservationComponent {
             console.log(data);
             this.dialogRef.close(data);
         }, err => console.log(err));
-        this.reservation = new __WEBPACK_IMPORTED_MODULE_4__models_Reservation__["c" /* Reservation */]('', new __WEBPACK_IMPORTED_MODULE_4__models_Reservation__["a" /* Attributes */](new Date(0, 0), 0, 0, 0, 0, '', new __WEBPACK_IMPORTED_MODULE_4__models_Reservation__["b" /* ContactDetails */]('', ''), [''], ''));
+        this.reservation = new __WEBPACK_IMPORTED_MODULE_5__models_Reservation__["c" /* Reservation */]('', new __WEBPACK_IMPORTED_MODULE_5__models_Reservation__["a" /* Attributes */](new Date(0, 0), 0, 0, 0, 0, '', new __WEBPACK_IMPORTED_MODULE_5__models_Reservation__["b" /* ContactDetails */]('', ''), [''], ''));
     }
     update() {
         this.httpCient.put('api/reservation/update_reservation/' +
@@ -528,10 +559,10 @@ CreateReservationComponent = __decorate([
         template: __webpack_require__("../../../../../src/app/create-reservation/create-reservation.component.html"),
         styles: [__webpack_require__("../../../../../src/app/create-reservation/create-reservation.component.scss")]
     }),
-    __param(4, Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["y" /* Inject */])(__WEBPACK_IMPORTED_MODULE_6__angular_material__["a" /* MAT_DIALOG_DATA */])),
+    __param(4, Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["y" /* Inject */])(__WEBPACK_IMPORTED_MODULE_7__angular_material__["a" /* MAT_DIALOG_DATA */])),
     __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__angular_common_http__["a" /* HttpClient */], __WEBPACK_IMPORTED_MODULE_2__angular_common__["c" /* DatePipe */],
-        __WEBPACK_IMPORTED_MODULE_5__common_service__["a" /* CommonService */], __WEBPACK_IMPORTED_MODULE_6__angular_material__["e" /* MatDialogRef */],
-        __WEBPACK_IMPORTED_MODULE_4__models_Reservation__["c" /* Reservation */], __WEBPACK_IMPORTED_MODULE_3__angular_forms__["b" /* FormBuilder */]])
+        __WEBPACK_IMPORTED_MODULE_6__common_service__["a" /* CommonService */], __WEBPACK_IMPORTED_MODULE_7__angular_material__["e" /* MatDialogRef */],
+        __WEBPACK_IMPORTED_MODULE_5__models_Reservation__["c" /* Reservation */], __WEBPACK_IMPORTED_MODULE_3__angular_forms__["b" /* FormBuilder */]])
 ], CreateReservationComponent);
 
 
@@ -878,7 +909,6 @@ let TileComponent = class TileComponent {
             data: { "from": "tile", "data": this.tile_data }
         });
         dialogRef.afterClosed().subscribe(result => {
-            console.log('The dialog was closed');
             this.commonService.fillTable();
         });
     }

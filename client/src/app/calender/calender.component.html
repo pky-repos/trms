@@ -18,9 +18,9 @@
         <table class="table table-striped" id="tableReservations">
           <thead>
             <tr>
-              <ng-container *ngFor="let hour of openHoursDisplay"> 
+              <ng-container *ngFor="let hour of openHours"> 
                 <th>
-                  {{hour}}
+                  {{hour.start.display}}
                 </th>
               </ng-container>
             </tr>

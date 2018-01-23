@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { FormControl, ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators, AbstractControl} from '@angular/forms';
 
-import {config} from '../config';
+import { config } from '../config';
+import { ReservationTypes, Tags, Statuses } from '../constants';
 import { Table } from '../models/Table';
 import { Reservation, Attributes, ContactDetails} from '../models/Reservation';
 
@@ -18,9 +19,6 @@ import { ValidatorFn } from '@angular/forms/src/directives/validators';
   styleUrls: ['./create-reservation.component.scss']
 })
 export class CreateReservationComponent implements OnInit {
-
-  opening: number;
-  closing: number;
 
   openHours: any[];
 
@@ -45,25 +43,19 @@ export class CreateReservationComponent implements OnInit {
 
   ngOnInit() {
 
-    this.opening = 11;
-    this.closing = 21;
-
-    this.openHours = Array(this.closing - this.opening).
-      fill(0).map((x, i) => ({ 'value': i + this.opening, 'display': (i + this.opening).toString() + ':00' }));
-    console.log('openhours-', this.openHours);
+    this.openHours = this.commonService.getOpenHours();
 
     this.reservation = new Reservation('', new Attributes(new Date(0, 0), 0, 0, 0, 0, '',
       new ContactDetails('', ''), [''], ''));
-    this.reservationTypes = ['Walk-In', 'Phone', 'Online'];
+    this.reservationTypes = ReservationTypes;
     this.showReservationForm = false;
 
 
-    this.tags = ['Birthday', 'Anniversary', 'A la carte/ Buffet', 'Zomato/ Dineout', 'Outside Requested',
-      'Indoor Requested', 'Window Requested', 'Smoking Area'].map((tag, i) => {
+    this.tags = Tags.map((tag, i) => {
         return { name: tag, value: i, checked: false }
       });
 
-    this.statuses = ['Arrived', 'Seated', 'Finished', 'Cancel', 'No-Show'];
+    this.statuses = Statuses;
 
 
     this.httpCient.get('api/table/get_tables').subscribe(data => {

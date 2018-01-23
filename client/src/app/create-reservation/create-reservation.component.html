@@ -18,14 +18,14 @@
             <mat-form-field>
                 <mat-select placeholder="Slot Start" formControlName="slot_start">
                     <!-- <mat-option>None</mat-option> -->
-                    <mat-option *ngFor="let openHour of openHours" [value]="openHour.value">{{openHour.display}}</mat-option>
+                    <mat-option *ngFor="let openHour of openHours" [value]="openHour.start.value">{{openHour.start.display}}</mat-option>
                 </mat-select>
             </mat-form-field>
 
             <mat-form-field>
                 <mat-select placeholder="Slot End" formControlName="slot_end">
                     <!-- <mat-option>None</mat-option> -->
-                    <mat-option *ngFor="let openHour of openHours" [value]="openHour.value">{{openHour.display}}</mat-option>
+                    <mat-option *ngFor="let openHour of openHours" [value]="openHour.end.value">{{openHour.end.display}}</mat-option>
                 </mat-select>
             </mat-form-field>
 

@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
+import { config } from './config';
+
 
 @Injectable()
 export class CommonService {
@@ -85,6 +87,22 @@ export class CommonService {
           err => console.log(err));
       });
 
+    });
+  }
+
+  getOpenHours() {
+    return Array(config.closing - config.opening).
+    fill(0).map((x, i) => {
+      return {
+        start: {
+          value: i + config.opening,
+          display: (i + config.opening).toString() + ':00'
+        },
+        end: {
+          value: i + config.opening + 1,
+          display: (i + config.opening + 1).toString() + ':00'
+        }
+      }
     });
   }
 }

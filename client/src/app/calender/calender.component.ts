@@ -3,8 +3,8 @@ import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
-import {config} from '../config';
-import { Reservation, Attributes, ContactDetails} from '../models/Reservation';
+import { config } from '../config';
+import { Reservation, Attributes, ContactDetails } from '../models/Reservation';
 import { CreateReservationComponent } from '../create-reservation/create-reservation.component';
 
 import { Table } from '../models/Table';
@@ -24,7 +24,6 @@ import { Observable } from 'rxjs/Observable';
 export class CalenderComponent implements OnInit {
 
   currentDate: string;
-  openHoursDisplay: any[];
   openHours: any[];
   tables: Table[];
   tablesReservations: any[] = [];
@@ -46,10 +45,9 @@ export class CalenderComponent implements OnInit {
       this.tablesReservations = data['tablesReservations'];
     });
 
-    this.openHoursDisplay = Array(config.closing - config.opening).
-      fill(0).map((x, i) => ((i + config.opening).toString() + ':00'));
-    
-    console.log('openhoursdisplay', this.openHoursDisplay);
+    this.openHours = this.commonService.getOpenHours();
+
+    console.log('openhours', this.openHours);
 
     this.currentDate = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
 
@@ -57,10 +55,6 @@ export class CalenderComponent implements OnInit {
       this.currentDate = date;
       this.commonService.fillTable();
     });
-
-    this.openHours = Array(config.closing - config.opening).
-      fill(0).map((x, i) => ((i + config.opening)));
-    console.log(this.openHours);
 
     this.commonService.fillTable();
   }
@@ -74,10 +68,13 @@ export class CalenderComponent implements OnInit {
     this.dialogRef = this.dialog.open(CreateReservationComponent, {
       width: config.reservationFormWidth,
       height: config.reservationFormHeight,
-      data: {"from":"calender", "data": new Reservation('', new Attributes(new Date(this.currentDate),
-      +this.openHours[slot], +this.openHours[slot + 1], 0, tableId, '',
-      new ContactDetails('', ''), [''], ''))}
-      
+      data: {
+        "from": "calender",
+        "data": new Reservation('', new Attributes(new Date(this.currentDate),
+          this.openHours[slot].start.value, this.openHours[slot].end.value, 0, tableId, '',
+          new ContactDetails('', ''), [''], ''))
+      }
+
     });
 
     this.dialogRef.afterClosed().subscribe(result => {
