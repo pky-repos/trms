@@ -29,7 +29,6 @@
     "mongoose-sequence": "^4.0.1"
   },
   "devDependencies": {
-    "cors": "^2.8.4",
-    "mongoose-sequence": "^4.0.1"
+   
   }
 }
