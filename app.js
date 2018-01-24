@@ -8,8 +8,8 @@ const reservation = require('./routes/reservation');
 
 const app = express();
 
-// mongoose.connect('mongodb://pky1139:password@ds111608.mlab.com:11608/trms'); //mLab
-mongoose.connect('mongodb://localhost/trms').catch(err => console.log(err));
+mongoose.connect('mongodb://pky1139:password@ds111608.mlab.com:11608/trms'); //mLab
+// mongoose.connect('mongodb://localhost/trms').catch(err => console.log(err));
 mongoose.Promise = global.Promise;
 
 app.use(express.static(path.join(__dirname, 'client', 'dist')));

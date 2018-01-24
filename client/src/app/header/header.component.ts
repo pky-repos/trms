@@ -20,13 +20,13 @@ import {CommonService} from '../common.service';
 })
 export class HeaderComponent implements OnInit {
 
-  private currentDate: string;
-  private table: Table;
-  private sections: string[]
-  private capacities: Number[];
-  private showAddTableForm: boolean;
+  currentDate: string;
+  table: Table;
+  sections: string[]
+  capacities: Number[];
+  showAddTableForm: boolean;
 
-  private tableList: number;
+  tableList: number;
 
 
   constructor(private httpCient: HttpClient,  private datepipe: DatePipe, 
