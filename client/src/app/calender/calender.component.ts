@@ -82,14 +82,17 @@ export class CalenderComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnChanges() {
-    if (this.getTableSub) {
-      this.getTableSub.unsubscribe();
-    }
-    if (this.getCurrentDateSub) {
-      this.getCurrentDateSub.unsubscribe();
-    }
+    console.log('Calender - ngOnChanges');
+    // if (this.getTableSub) {
+    //   this.getTableSub.unsubscribe();
+    // }
+    // if (this.getCurrentDateSub) {
+    //   this.getCurrentDateSub.unsubscribe();
+    // }
   }
+
   ngOnDestroy() {
+    console.log('Calender - ngOnDestroy');
     if (this.getTableSub) {
       this.getTableSub.unsubscribe();
     }

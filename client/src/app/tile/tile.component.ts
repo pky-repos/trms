@@ -1,8 +1,9 @@
-import { Component, OnInit, Input, HostListener, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, HostListener, ElementRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
 import {config} from '../config';
+import { environment } from '../../environments/environment';
 import {Reservation} from '../models/Reservation';
 import {CreateReservationComponent} from '../create-reservation/create-reservation.component';
 import {CommonService} from '../common.service';
@@ -12,7 +13,7 @@ import {CommonService} from '../common.service';
   templateUrl: './tile.component.html',
   styleUrls: ['./tile.component.scss']
 })
-export class TileComponent implements OnInit {
+export class TileComponent implements OnInit, OnDestroy {
 
   @Input()
   reservation_id: number;
@@ -31,12 +32,12 @@ export class TileComponent implements OnInit {
 
   ngOnInit() {
 
-    console.log(this.reservation_id);
+    // console.log(this.reservation_id);
     this.populateTile(this.reservation_id);
   }
 
   populateTile(id) {
-    this.httpCient.get('api/reservation/get_reservation/' + id).subscribe(data => {
+    this.httpCient.get(environment.api + 'api/reservation/get_reservation/' + id).subscribe(data => {
       this.tile_data = data['reservation'] as Reservation;
     });
   }
@@ -51,5 +52,9 @@ export class TileComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       this.commonService.fillTable();
     });
+  }
+
+  ngOnDestroy(){
+    this.tile_data = [];
   }
 }

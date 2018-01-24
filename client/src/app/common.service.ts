@@ -3,13 +3,16 @@ import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 import { config } from './config';
+import { environment } from '../environments/environment';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
 
 @Injectable()
 export class CommonService {
-  public currentDateSubject = new Subject<string>();
-  public gridSubject = new Subject<any>();
+  public currentDateSubject = new ReplaySubject<string>(1);
+  public gridSubject = new ReplaySubject<any>(1);
 
-  tr: any;
+  //tr: any;
   tables: any;
   currentDate: string;
 
@@ -25,34 +28,43 @@ export class CommonService {
   getCurrentDate(): Observable<string> {
     console.log('Service - getCurrentDate Observable');
 
-    return this.currentDateSubject.asObservable().debounceTime(1000);
+    return this.currentDateSubject.asObservable();
   }
 
   getTable(): Observable<any> {
     console.log('Service - getTable observable');
 
-    return this.gridSubject.asObservable().debounceTime(1000);
+    return this.gridSubject.asObservable();
   }
 
   fillTable() {
 
     console.log('Service - fillTable function');
-    this.getCurrentDate().subscribe(date => {
 
-      this.tr = [];
+    this.httpCient.get(environment.api + 'api/table/get_tables').subscribe(tableData => {
+      console.log('service - tableData ',tableData);
 
-      this.httpCient.get('api/table/get_tables').subscribe(data => {
-        this.tables = data['tables'];
-        //console.log('service', this.tables);
+      this.currentDateSubject.subscribe(date => {
 
+        let tables = [];
+        tables = tableData['tables'];
+        console.log('service - http - get_tables', tables);
 
-        data['tables'].forEach(table => {
-          // console.log('forEach order', table['id']);
-          this.httpCient.get('api/table/get_table_reservations/' + table['id'] + '/' + date)
+        let tr = [];
+
+        let tableProcessedCount = 0;
+        tables.forEach(table => {
+          console.log('forEach table', table['id']);
+          
+          console.log('service - http - get_table_reservations query ',  table['id'] + '/' + date);
+          
+          this.httpCient.get(environment.api + 'api/table/get_table_reservations/' + table['id'] + '/' + date)
             .subscribe(tableReservation => {
 
+              console.log('service - http - get_table_reservations- result - ', tableReservation);
+              tableProcessedCount++;
 
-              this.tr.push({
+              tr.push({
                 tableId: +table['id'],
                 slot: Array(config.closing - config.opening).fill({}).map((val, index) => (
                   {
@@ -72,6 +84,19 @@ export class CommonService {
                 })
               });
 
+              if(tableProcessedCount == tables.length) {
+
+                let sortFn = function (a, b) {
+                  return a.tableId - b.tableId;
+                }
+                tr.sort(sortFn);
+                console.log('service - tablesreservations - sorted', tr);
+        
+                this.gridSubject.next({
+                  'tables': tables.sort(),
+                  'tablesReservations': tr
+                });
+              }
 
 
             },
@@ -80,23 +105,13 @@ export class CommonService {
             });
         });
 
-      }, err => console.log(err),
-    () => {
 
-      let sortFn = function (a, b) {
-        return a.tableId - b.tableId;
-      }
-      this.tr.sort(sortFn);
-      console.log('service - tablesreservations - sorted', this.tr);
 
-      this.gridSubject.next({
-        'tables': this.tables.sort(),
-        'tablesReservations': this.tr
-      });
-    })
-    }
-    )
-
+      })
+    }, err => console.log(err),
+      () => {
+      })
+    console.log('service - fillTable end');
   }
 
   getOpenHours() {
