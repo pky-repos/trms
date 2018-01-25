@@ -6,6 +6,7 @@ client/e2e/*.js
 client/e2e/*.map
 client/.gitignore_
 client/.git_/
+client/dist/
 
 .vscode/
 
