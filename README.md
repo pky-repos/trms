@@ -1,4 +1,7 @@
-Table Reservation Management System (TRMS) for a Restaurant
+# Table Reservation Management System (TRMS)
+
+###(for a Restaurant)
+
 
 
 Add Tables
